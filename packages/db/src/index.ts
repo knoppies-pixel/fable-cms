@@ -13,6 +13,16 @@ export function createSupabaseClient(env: SupabaseEnv): SupabaseClient<Database>
   return createClient<Database>(env.url, env.anonKey);
 }
 
+/**
+ * Columns of `sites` readable by authenticated admin-app users.
+ * `sites.api_key_hash` is hidden via column-level grants (migration
+ * 20260718110000), so `select('*')` on sites fails for authenticated —
+ * and depending on client handling it can surface as an empty result
+ * rather than a loud error. Always select sites through this list.
+ */
+export const siteSummaryColumns =
+  "id, slug, name, domain, tokens, settings, created_at" as const;
+
 export interface ServiceRoleEnv {
   url: string;
   serviceRoleKey: string;
