@@ -84,6 +84,15 @@ async function main() {
     visibleSites,
   );
 
+  const { error: hashColumnError } = await editor
+    .from("sites")
+    .select("api_key_hash");
+  check(
+    "sites: api_key_hash column is not selectable",
+    hashColumnError !== null,
+    hashColumnError ?? "no error raised",
+  );
+
   const { data: otherPages } = await editor
     .from("pages")
     .select("id")
@@ -193,6 +202,18 @@ async function main() {
   check("pages: delete affects 0 rows", deletedPages?.length === 0, deletedPages);
 
   await editor.auth.signOut();
+
+  const anon = createClient<Database>(SUPABASE_URL, ANON_KEY, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+  const { error: anonRpcError } = await anon.rpc("page_site_id", {
+    p_page_id: demoHomePage.id,
+  });
+  check(
+    "anon cannot execute page_site_id()",
+    anonRpcError !== null,
+    anonRpcError ?? "no error raised",
+  );
 
   console.log("\n--- Content API ---");
 
