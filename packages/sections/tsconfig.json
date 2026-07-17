@@ -1,0 +1,7 @@
+{
+  "extends": "@fable/config/tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve"
+  },
+  "include": ["src"]
+}

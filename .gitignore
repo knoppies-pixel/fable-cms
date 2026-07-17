@@ -1,5 +1,9 @@
-﻿node_modules
+node_modules
 .env*
+!.env.example
 .next
 dist
-.supabase
+*.tsbuildinfo
+.vercel
+supabase/.temp
+supabase/.branches

@@ -1,0 +1,12 @@
+/*
+ * Shared Tailwind v4 theme layer.
+ * Semantic design tokens are defined as CSS variables here and consumed via
+ * token classes (bg-surface, text-primary, ...). Per-site values are generated
+ * from the site's tokens.json (Phase 2+); these are neutral defaults.
+ */
+@theme {
+  --color-surface: #ffffff;
+  --color-primary: #111111;
+  --color-muted: #6b7280;
+  --color-accent: #2563eb;
+}

@@ -1,0 +1,24 @@
+{
+  "name": "@fable/sections",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Section registry: Zod schemas, meta, and server components for every section type.",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@fable/config": "workspace:*",
+    "@types/react": "^19.2.0",
+    "react": "^19.2.7",
+    "typescript": "~5.9.3"
+  }
+}

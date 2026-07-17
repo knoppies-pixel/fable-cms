@@ -1,0 +1,14 @@
+{
+  "name": "fable-cms",
+  "private": true,
+  "packageManager": "pnpm@11.13.1",
+  "scripts": {
+    "dev:admin": "pnpm --filter admin dev",
+    "dev:site": "pnpm --filter site-template dev",
+    "typecheck": "pnpm -r typecheck",
+    "build": "pnpm -r build"
+  },
+  "devDependencies": {
+    "supabase": "^2.109.1"
+  }
+}
