@@ -3,7 +3,7 @@ import type { SectionMeta } from "../contract";
 
 export const schema = z.object({
   heading: z.string().max(120).default("Get in touch"),
-  intro: z.string().max(300).default(""),
+  intro: z.string().max(300).describe("textarea").default(""),
   showPhone: z.boolean().default(false),
   submitLabel: z.string().min(1).max(40).default("Send message"),
   successMessage: z

@@ -6,7 +6,7 @@ export const schema = z.object({
   items: z
     .array(
       z.object({
-        quote: z.string().min(1).max(500),
+        quote: z.string().min(1).max(500).describe("textarea"),
         author: z.string().min(1).max(80),
         role: z.string().max(80).default(""),
       }),

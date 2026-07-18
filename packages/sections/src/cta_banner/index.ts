@@ -4,7 +4,7 @@ import type { SectionMeta } from "../contract";
 
 export const schema = z.object({
   heading: z.string().min(1).max(120),
-  body: z.string().max(300).default(""),
+  body: z.string().max(300).describe("textarea").default(""),
   cta: link.nullable().default(null),
   variant: z.enum(["accent", "subtle"]).default("accent"),
 });

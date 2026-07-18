@@ -9,9 +9,11 @@
     "build": "pnpm -r build",
     "db:seed": "pnpm --filter @fable/db seed",
     "db:test": "pnpm --filter @fable/db test:phase1",
-    "db:test:phase2": "pnpm --filter @fable/db test:phase2"
+    "db:test:phase2": "pnpm --filter @fable/db test:phase2",
+    "test:phase3": "pnpm --filter @fable/db exec tsx ../../scripts/phase3-acceptance.ts"
   },
   "devDependencies": {
+    "playwright": "^1.61.1",
     "supabase": "^2.109.1"
   }
 }

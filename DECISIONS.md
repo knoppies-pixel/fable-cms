@@ -80,6 +80,39 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
 - **Seed proves failure modes on purpose:** `/about` carries one published invalid-props hero
   and one unknown `legacy_widget` section (error cards in preview, nothing in production),
   and home carries one draft CTA. Acceptance scripts assert all three.
+## Phase 3
+
+- **All admin reads/writes run as the signed-in user (RLS-scoped), never service role.**
+  Server components and server actions use a cookie-bound `@supabase/ssr` client; media
+  operations (upload, list, alt edit, delete) use the browser twin directly. Postgres
+  policies stay the single enforcement layer; the service-role client remains exclusive to
+  the content API route. A `20260718120000` migration adds `storage.objects` policies so
+  site members can manage objects in their own `media-{site_id}` buckets (fail-closed
+  `bucket_site_id()` maps bucket → site).
+- **Form generation introspects the live Zod schemas** (`lib/zod-form.ts`): unwrap
+  default/nullable/optional wrappers, then match by identity against the shared `imageRef` /
+  `link` / `richTextDoc` schemas (structural fallback) before falling through to primitive
+  kinds. Textareas follow the spec's `.describe("textarea")` convention — long-text fields
+  across the registry now carry that annotation (metadata only, no validation change).
+  `scripts/check-zod-form.ts` pins the expected field kinds for all 10 sections so a Zod
+  upgrade that breaks introspection fails loudly.
+- **Section saves validate server-side against the registry schema** in the `saveSectionProps`
+  action (client-side parse is UX only). Parsed output is written back, so saving also
+  normalizes rows and fills newly added defaults. Invalid legacy rows load as-is with their
+  errors highlighted instead of being reset.
+- **Tiptap lands admin-side only** for `richTextDoc` fields (StarterKit; toolbar limited to
+  the node set the site renderer supports). The site keeps the dependency-free renderer.
+- **New pages start as drafts and Phase 3 ships no publish toggles** (they're Phase 4 scope);
+  the acceptance script therefore verifies via `?drafts=1`. Sections keep the DB default
+  (`published`) so edits to already-published pages go live on save.
+- **Phase 3 acceptance is genuinely UI-driven**: `scripts/phase3-acceptance.ts` runs headless
+  Chrome (Playwright, system `chrome` channel — no browser download) through login → create
+  page → add/edit/delete all 10 section types → upload + alt-edit + pick an image, asserting
+  the content API after each phase. Run with the admin dev server up: `pnpm test:phase3`.
+- **`form_submissions` persistence + Resend email (deferred from Phase 2) remain deferred** —
+  the contact endpoint still validates and logs only. It needs env plumbing (Resend key,
+  per-site notification address in `sites.settings`) that fits Phase 5's `create-site.ts`.
+
 - **Hardening follow-up: Supabase origin is env-derived end to end.** The content route
   resolves `NEXT_PUBLIC_SUPABASE_URL` at module load (missing var fails the build, not
   per-request with `undefined` URLs); the site's `next/image` `remotePatterns` are parsed

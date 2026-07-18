@@ -8,7 +8,7 @@ export const schema = z.object({
       z.object({
         question: z.string().min(1).max(200),
         // Plain text; blank lines split paragraphs (rendered whitespace-pre-line).
-        answer: z.string().min(1).max(2000),
+        answer: z.string().min(1).max(2000).describe("textarea"),
       }),
     )
     .min(1)

@@ -4,7 +4,7 @@ import type { SectionMeta } from "../contract";
 
 export const schema = z.object({
   heading: z.string().min(1).max(120),
-  subheading: z.string().max(240).default(""),
+  subheading: z.string().max(240).describe("textarea").default(""),
   cta: link.nullable().default(null),
   image: imageRef.nullable().default(null),
   variant: z.enum(["centered", "split", "full-bleed"]).default("centered"),

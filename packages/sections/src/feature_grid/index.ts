@@ -4,12 +4,12 @@ import type { SectionMeta } from "../contract";
 export const schema = z.object({
   eyebrow: z.string().max(60).default(""),
   heading: z.string().max(120).default(""),
-  intro: z.string().max(300).default(""),
+  intro: z.string().max(300).describe("textarea").default(""),
   items: z
     .array(
       z.object({
         title: z.string().min(1).max(80),
-        description: z.string().max(300).default(""),
+        description: z.string().max(300).describe("textarea").default(""),
       }),
     )
     .min(1)
