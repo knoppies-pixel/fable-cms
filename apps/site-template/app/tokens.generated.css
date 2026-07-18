@@ -1,0 +1,11 @@
+/* AUTO-GENERATED from theme/tokens.json by scripts/build-tokens.mjs — do not edit. */
+:root {
+  --color-surface: #ffffff;
+  --color-surface-alt: #f0f7f9;
+  --color-primary: #0f2e35;
+  --color-muted: #48606b;
+  --color-accent: #0e7490;
+  --color-accent-contrast: #ffffff;
+  --radius-card: 0.75rem;
+  --radius-btn: 0.5rem;
+}

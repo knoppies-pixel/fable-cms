@@ -1,25 +1,14 @@
-import type { z } from "zod";
-import type { ComponentType } from "react";
-
 /**
- * Section registry contract (see CMS_SYSTEM_SPEC.md §5).
- * Every section type exports { schema, meta, Component }; a generated
- * registry.ts maps section_type → entry. Section implementations land in Phase 2.
+ * Section registry package (see CMS_SYSTEM_SPEC.md §5).
+ * Every section type lives in src/{type}/ and exports { schema, meta,
+ * Component }; the generated registry.ts maps section_type → entry.
  */
-export interface SectionMeta {
-  type: string;
-  label: string;
-  description: string;
-  category: string;
-  /** Tabler icon name, used by the admin. */
-  icon: string;
-  defaults: Record<string, unknown>;
-}
+export type { RegistryEntry, SectionCategory, SectionMeta } from "./contract";
+export { getRegistryEntry, registry, type SectionType } from "./registry";
 
-export interface RegistryEntry {
-  schema: z.ZodType;
-  meta: SectionMeta;
-  Component: ComponentType<Record<string, unknown>>;
-}
-
-export const registry: Record<string, RegistryEntry> = {};
+// Shared primitives used by the renderer and (Phase 3) the admin.
+export { CmsImage } from "./lib/CmsImage";
+export { registerMedia, resolveMedia, type MediaRecord } from "./lib/media";
+export { imageRef, link, type ImageRef, type Link } from "./lib/refs";
+export { RichText, richTextDoc, textDoc, type RichTextDoc } from "./lib/richtext";
+export { SectionShell } from "./lib/SectionShell";

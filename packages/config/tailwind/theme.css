@@ -1,12 +1,21 @@
 /*
  * Shared Tailwind v4 theme layer.
  * Semantic design tokens are defined as CSS variables here and consumed via
- * token classes (bg-surface, text-primary, ...). Per-site values are generated
- * from the site's tokens.json (Phase 2+); these are neutral defaults.
+ * token classes (bg-surface, text-primary, ...). These are neutral defaults;
+ * each site overrides the variables in :root via its generated
+ * tokens.generated.css (built from theme/tokens.json by `pnpm tokens:build`).
  */
 @theme {
+  /* Backgrounds */
   --color-surface: #ffffff;
-  --color-primary: #111111;
-  --color-muted: #6b7280;
+  --color-surface-alt: #f4f6f8;
+  /* Text */
+  --color-primary: #111827;
+  --color-muted: #4b5563;
+  /* Brand */
   --color-accent: #2563eb;
+  --color-accent-contrast: #ffffff;
+  /* Shape */
+  --radius-card: 0.75rem;
+  --radius-btn: 0.5rem;
 }

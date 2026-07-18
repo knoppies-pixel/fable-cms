@@ -34,6 +34,10 @@ export async function GET(
   if (!apiKey) {
     return NextResponse.json({ error: "Missing API key" }, { status: 401 });
   }
+  // Draft content is only served to holders of the site key (the site's
+  // server, which uses it to render Next.js draft-mode previews).
+  const includeDrafts =
+    new URL(request.url).searchParams.get("drafts") === "1";
 
   const supabase = serviceClient();
   const { data: site, error: siteError } = await supabase
@@ -51,21 +55,44 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { data: pages, error: pagesError } = await supabase
+  let pagesQuery = supabase
     .from("pages")
     .select(
-      "slug, title, seo, published_at, sort_order, sections(id, section_type, props, sort_order)",
+      "slug, title, seo, status, published_at, sort_order, sections(id, section_type, props, sort_order, status)",
     )
     .eq("site_id", site.id)
-    .eq("status", "published")
-    .eq("sections.status", "published")
     .order("sort_order", { ascending: true })
     .order("sort_order", { ascending: true, referencedTable: "sections" });
+  if (!includeDrafts) {
+    pagesQuery = pagesQuery
+      .eq("status", "published")
+      .eq("sections.status", "published");
+  }
+  const { data: pages, error: pagesError } = await pagesQuery;
 
   if (pagesError) {
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 
+  const { data: mediaRows, error: mediaError } = await supabase
+    .from("media")
+    .select("id, path, alt, width, height")
+    .eq("site_id", site.id);
+
+  if (mediaError) {
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  }
+
+  // Public bucket URLs — one bucket per site, media-{site_id} (spec §3).
+  const storageBase = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media-${site.id}`;
+  const media = (mediaRows ?? []).map((row) => ({
+    id: row.id,
+    url: `${storageBase}/${row.path}`,
+    alt: row.alt ?? "",
+    width: row.width,
+    height: row.height,
+  }));
+
   const { api_key_hash: _apiKeyHash, id: _id, ...publicSite } = site;
-  return NextResponse.json({ site: publicSite, pages: pages ?? [] });
+  return NextResponse.json({ site: publicSite, pages: pages ?? [], media });
 }

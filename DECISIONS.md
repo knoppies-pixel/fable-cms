@@ -47,3 +47,36 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
   site. All current logins are studio staff or single-site clients, so not worth policy
   complexity now. If mixed-role users become common, tighten `pages_update`/`sections_update`
   `with check` to require `studio_admin` whenever `site_id`/`page_id` changes.
+
+## Phase 2
+
+- **Media resolution via a per-request map, not denormalized props.** Image fields in section
+  props stay `{ mediaId, alt }` (spec §5 shape). The content API embeds the site's media rows
+  (with public URLs + dimensions); the page loader calls `registerMedia()` and `CmsImage`
+  resolves refs through a `React.cache()`-scoped map. Sections stay presentational, alt/size
+  fixes in the media library propagate on next revalidate, and a deleted media row renders
+  nothing rather than a broken image.
+- **Rich text = Tiptap JSON subset, rendered by our own small server renderer** (paragraph,
+  heading 1–4, lists, blockquote, hardBreak, bold/italic/link marks). No Tiptap runtime
+  dependency on the site; unknown node types render their children so editor upgrades can't
+  break published pages. The Tiptap editor itself lands with the admin (Phase 3).
+- **contact_form v1 is validate + honeypot + log only.** The site's `/api/contact` route
+  validates with Zod and drops honeypot hits, but persistence (`form_submissions` table) and
+  Resend email need service-role DB access and env plumbing that belong with the admin CRUD
+  work — deferred to Phase 3 with a migration. The section UI is final.
+- **Tokens pipeline: repo `theme/tokens.json` is the source of truth for site CSS.**
+  `pnpm tokens:build` (auto-runs pre dev/build) generates a `:root` override block after the
+  shared `@theme` defaults. `sites.tokens` in the DB carries the same values for the admin's
+  future preview theming; Phase 5's `create-site.ts` writes both from `kb/{client}/tokens.json`.
+- **faq_accordion uses native `<details>/<summary>`** — server component, zero JS, keyboard
+  accessible. A JS-animated accordion is a Phase 7 polish item if clients ask.
+- **feature_grid omits the per-item `icon` field for now** — icon rendering needs a Tabler
+  asset strategy; adding `icon` later is an additive schema change with `.default("")`.
+- **Registry entries are type-erased** (`Component: ComponentType<never>`), so the generated
+  registry is cast-free; the renderer does one documented widening cast after `safeParse`.
+- **Content API `?drafts=1` reuses the site API key** for preview fetches. The key already
+  lives server-side in the site; a separate preview credential adds rotation surface without
+  a threat-model win at this scale. Draft mode itself is gated by `PREVIEW_SECRET`.
+- **Seed proves failure modes on purpose:** `/about` carries one published invalid-props hero
+  and one unknown `legacy_widget` section (error cards in preview, nothing in production),
+  and home carries one draft CTA. Acceptance scripts assert all three.

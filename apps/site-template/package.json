@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/build-tokens.mjs",
     "dev": "next dev --port 3001",
+    "tokens:build": "node scripts/build-tokens.mjs",
+    "prebuild": "node scripts/build-tokens.mjs",
     "build": "next build",
     "start": "next start --port 3001",
     "typecheck": "tsc --noEmit"
@@ -13,7 +16,9 @@
     "@fable/sections": "workspace:*",
     "next": "^16.2.10",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@fable/config": "workspace:*",

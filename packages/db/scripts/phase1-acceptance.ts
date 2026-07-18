@@ -145,9 +145,11 @@ async function main() {
     typeChangeError ?? "no error raised",
   );
 
+  // Keep the seeded props intact (the demo site renders them) — only prove
+  // that an editor can write the props column.
   const newProps = {
-    heading: "Plumbing done right, every time",
-    subheading: "24/7 call-outs across the metro.",
+    ...(demoHero.props as Record<string, unknown>),
+    heading: "Plumbing done right, the first time",
   };
   const { data: propsUpdate, error: propsError } = await editor
     .from("sections")
@@ -226,7 +228,7 @@ async function main() {
     site?: { slug?: string; api_key_hash?: string };
     pages?: Array<{
       slug: string;
-      sections: Array<{ section_type: string }>;
+      sections: Array<{ id: string; section_type: string }>;
     }>;
   };
   check("site.slug is demo-site", body.site?.slug === "demo-site", body.site);
@@ -240,14 +242,31 @@ async function main() {
       ?.find((p) => p.slug === "/")
       ?.sections.map((s) => s.section_type) ?? [];
   check(
-    "home has the 3 published section types",
+    "home has the 6 published section types in order",
     JSON.stringify(homeSections) ===
-      JSON.stringify(["hero", "rich_text", "feature_grid"]),
+      JSON.stringify([
+        "hero",
+        "logo_strip",
+        "feature_grid",
+        "image_text_split",
+        "testimonials",
+        "cta_banner",
+      ]),
     homeSections,
   );
+  const { data: draftSections } = await service
+    .from("sections")
+    .select("id, pages!inner(site_id)")
+    .eq("status", "draft")
+    .eq("pages.site_id", demoSite.id);
+  const returnedIds = new Set(
+    body.pages?.flatMap((p) => p.sections.map((s) => s.id)) ?? [],
+  );
   check(
-    "draft section (cta_banner) is excluded",
-    !homeSections.includes("cta_banner"),
+    "draft sections are excluded",
+    (draftSections?.length ?? 0) > 0 &&
+      !draftSections?.some((s) => returnedIds.has(s.id)),
+    draftSections,
   );
 
   const badKeyResponse = await fetch(url, {
@@ -265,8 +284,20 @@ async function main() {
     wrongSiteResponse.status === 401,
   );
 
-  console.log("\n--- Content API response body ---");
-  console.log(JSON.stringify(body, null, 2));
+  console.log("\n--- Content API response summary ---");
+  console.log(
+    JSON.stringify(
+      {
+        site: body.site,
+        pages: body.pages?.map((p) => ({
+          slug: p.slug,
+          sections: p.sections.map((s) => s.section_type),
+        })),
+      },
+      null,
+      2,
+    ),
+  );
 
   console.log(
     `\n${failures === 0 ? "ALL CHECKS PASSED" : `${failures} CHECK(S) FAILED`}`,

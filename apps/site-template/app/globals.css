@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @import "@fable/config/tailwind/theme.css";
+/* Per-site overrides generated from theme/tokens.json — must come last. */
+@import "./tokens.generated.css";
+
+/* Sections live in @fable/sections (outside this app's content globs). */
+@source "../../../packages/sections/src";

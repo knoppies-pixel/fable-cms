@@ -1,13 +1,20 @@
 /**
- * Phase 1 seed: one demo site (two pages, four placeholder section types,
- * one draft section to prove publish filtering), plus a second site used by
+ * Phase 2 seed: one demo site with two pages composed from real registry
+ * sections (all 10 v1 types), placeholder media generated with sharp and
+ * uploaded to the site's public Storage bucket, plus a second site used by
  * the acceptance tests to prove cross-site RLS isolation.
  *
- * Idempotent: deletes and recreates the seeded sites and users on every run.
- * Run with: pnpm db:seed
+ * Deliberate fixtures for acceptance tests:
+ *  - one DRAFT section on the home page (excluded from published output),
+ *  - one published section with INVALID props and one with an UNKNOWN type
+ *    on /about (error cards in preview, nothing in production).
+ *
+ * Idempotent: deletes and recreates the seeded sites, their Storage buckets,
+ * and users on every run. Run with: pnpm db:seed
  */
 import { createHash, randomBytes } from "node:crypto";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import sharp from "sharp";
 import type { Database } from "../src/types";
 import {
   DEMO_SITE_API_KEY,
@@ -22,12 +29,156 @@ function sha256Hex(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
+// --- Rich text helpers (Tiptap JSON, matching @fable/sections richTextDoc) --
+
+type Node = Record<string, unknown>;
+const text = (t: string): Node => ({ type: "text", text: t });
+const p = (t: string): Node => ({ type: "paragraph", content: [text(t)] });
+const h = (level: number, t: string): Node => ({
+  type: "heading",
+  attrs: { level },
+  content: [text(t)],
+});
+const bullets = (...items: string[]): Node => ({
+  type: "bulletList",
+  content: items.map((t) => ({ type: "listItem", content: [p(t)] })),
+});
+const doc = (...content: Node[]): Node => ({ type: "doc", content });
+
+// --- Placeholder image generation (sharp) --------------------------------
+
+interface Asset {
+  path: string;
+  alt: string;
+  width: number;
+  height: number;
+  buffer: Buffer;
+  contentType: string;
+}
+
+const xmlEscape = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+function sceneSvg(
+  width: number,
+  height: number,
+  from: string,
+  to: string,
+  label: string,
+): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${from}"/>
+      <stop offset="1" stop-color="${to}"/>
+    </linearGradient>
+  </defs>
+  <rect width="${width}" height="${height}" fill="url(#g)"/>
+  <circle cx="${width * 0.78}" cy="${height * 0.28}" r="${height * 0.3}" fill="#ffffff" opacity="0.12"/>
+  <circle cx="${width * 0.16}" cy="${height * 0.8}" r="${height * 0.42}" fill="#ffffff" opacity="0.08"/>
+  <text x="${width / 2}" y="${height / 2}" font-family="sans-serif" font-size="${Math.round(height / 14)}" font-weight="bold" fill="#ffffff" opacity="0.85" text-anchor="middle" dominant-baseline="middle">${xmlEscape(label)}</text>
+</svg>`;
+}
+
+function logoSvg(width: number, height: number, name: string, color: string): string {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+  <rect x="4" y="${height / 2 - 14}" width="28" height="28" rx="8" fill="${color}"/>
+  <text x="44" y="${height / 2}" font-family="sans-serif" font-size="24" font-weight="bold" fill="#334155" dominant-baseline="central">${xmlEscape(name)}</text>
+</svg>`;
+}
+
+async function jpegAsset(
+  path: string,
+  alt: string,
+  width: number,
+  height: number,
+  from: string,
+  to: string,
+  label: string,
+): Promise<Asset> {
+  const buffer = await sharp(Buffer.from(sceneSvg(width, height, from, to, label)))
+    .jpeg({ quality: 72, mozjpeg: true })
+    .toBuffer();
+  return { path, alt, width, height, buffer, contentType: "image/jpeg" };
+}
+
+async function pngLogoAsset(
+  path: string,
+  alt: string,
+  name: string,
+  color: string,
+): Promise<Asset> {
+  const width = 320;
+  const height = 96;
+  const buffer = await sharp(Buffer.from(logoSvg(width, height, name, color)))
+    .png()
+    .toBuffer();
+  return { path, alt, width, height, buffer, contentType: "image/png" };
+}
+
+async function buildAssets(): Promise<Asset[]> {
+  const teal = ["#0e7490", "#155e75"] as const;
+  const gallery: Array<[string, string, string, string]> = [
+    ["gallery-1.jpg", "Full bathroom renovation in Parkhurst", "#0e7490", "#164e63"],
+    ["gallery-2.jpg", "New geyser installation with drip tray", "#0f766e", "#134e4a"],
+    ["gallery-3.jpg", "Kitchen sink and mixer replacement", "#155e75", "#1e3a5f"],
+    ["gallery-4.jpg", "Trenchless pipe repair in progress", "#0369a1", "#0c4a6e"],
+    ["gallery-5.jpg", "Solar water heater rooftop install", "#0d9488", "#115e59"],
+    ["gallery-6.jpg", "Commercial bathroom fit-out", "#0891b2", "#155e75"],
+  ];
+  const logos: Array<[string, string, string, string]> = [
+    ["logo-1.png", "Harbourview Café logo", "Harbourview", "#0e7490"],
+    ["logo-2.png", "Northside Property Group logo", "Northside", "#0f766e"],
+    ["logo-3.png", "Fairfield Estates logo", "Fairfield", "#0369a1"],
+    ["logo-4.png", "Metro Fitness Clubs logo", "Metro Fitness", "#155e75"],
+    ["logo-5.png", "Oak & Iron Brewhouse logo", "Oak & Iron", "#0d9488"],
+  ];
+  return Promise.all([
+    jpegAsset("hero.jpg", "Plumber repairing a kitchen sink", 1600, 1000, teal[0], teal[1], "Demo Plumbing Co"),
+    jpegAsset("workshop.jpg", "Our fully stocked service van", 1200, 900, "#155e75", "#0f2e35", "Workshop on wheels"),
+    jpegAsset("team.jpg", "The Demo Plumbing team at the workshop", 1200, 900, "#0f766e", "#0f2e35", "The team"),
+    ...gallery.map(([path, alt, from, to]) =>
+      jpegAsset(path, alt, 800, 600, from, to, alt.split(" ").slice(0, 2).join(" ")),
+    ),
+    ...logos.map(([path, alt, name, color]) => pngLogoAsset(path, alt, name, color)),
+  ]);
+}
+
+// --- Storage bucket helpers ----------------------------------------------
+
+const bucketName = (siteId: string) => `media-${siteId}`;
+
+async function deleteSiteBucket(db: SupabaseClient<Database>, siteId: string) {
+  const bucket = bucketName(siteId);
+  const { error: emptyError } = await db.storage.emptyBucket(bucket);
+  if (emptyError && !/not found/i.test(emptyError.message)) {
+    throw new Error(`emptying bucket ${bucket}: ${emptyError.message}`);
+  }
+  const { error: deleteError } = await db.storage.deleteBucket(bucket);
+  if (deleteError && !/not found/i.test(deleteError.message)) {
+    throw new Error(`deleting bucket ${bucket}: ${deleteError.message}`);
+  }
+}
+
 async function main() {
   const db = createClient<Database>(SUPABASE_URL, SERVICE_ROLE_KEY, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
-  // Wipe previous seed runs. sites cascades to pages/sections/media/members.
+  // Wipe previous seed runs: buckets first (their names embed the old site
+  // ids), then sites (cascades to pages/sections/media/members), then users.
+  const { data: staleSites, error: staleError } = await db
+    .from("sites")
+    .select("id")
+    .in("slug", SEED_SITE_SLUGS);
+  if (staleError) throw new Error(`listing stale sites: ${staleError.message}`);
+  for (const stale of staleSites ?? []) {
+    await deleteSiteBucket(db, stale.id);
+  }
+
   const { error: wipeError } = await db
     .from("sites")
     .delete()
@@ -65,8 +216,15 @@ async function main() {
       name: "Demo Plumbing Co",
       domain: "demo-plumbing.example",
       tokens: {
-        colors: { primary: "#0e7490", surface: "#f8fafc" },
-        typeScale: { base: "1rem", ratio: 1.25 },
+        colors: {
+          surface: "#ffffff",
+          surfaceAlt: "#f0f7f9",
+          primary: "#0f2e35",
+          muted: "#48606b",
+          accent: "#0e7490",
+          accentContrast: "#ffffff",
+        },
+        radius: { card: "0.75rem", btn: "0.5rem" },
       },
       settings: { social: { instagram: "@demoplumbing" } },
       api_key_hash: sha256Hex(DEMO_SITE_API_KEY),
@@ -94,6 +252,46 @@ async function main() {
   ]);
   if (membersError) throw new Error(`memberships: ${membersError.message}`);
 
+  // --- Media: public bucket + placeholder uploads + rows -----------------
+  const bucket = bucketName(demoSite.id);
+  const { error: bucketError } = await db.storage.createBucket(bucket, {
+    public: true,
+  });
+  if (bucketError) throw new Error(`creating bucket ${bucket}: ${bucketError.message}`);
+
+  const assets = await buildAssets();
+  for (const asset of assets) {
+    const { error } = await db.storage
+      .from(bucket)
+      .upload(asset.path, asset.buffer, {
+        contentType: asset.contentType,
+        upsert: true,
+      });
+    if (error) throw new Error(`uploading ${asset.path}: ${error.message}`);
+  }
+
+  const { data: mediaRows, error: mediaError } = await db
+    .from("media")
+    .insert(
+      assets.map((asset) => ({
+        site_id: demoSite.id,
+        path: asset.path,
+        alt: asset.alt,
+        width: asset.width,
+        height: asset.height,
+      })),
+    )
+    .select("id, path");
+  if (mediaError) throw new Error(`media rows: ${mediaError.message}`);
+
+  const mediaId = (path: string) => {
+    const row = mediaRows.find((m) => m.path === path);
+    if (!row) throw new Error(`seeded media not found: ${path}`);
+    return row.id;
+  };
+  const img = (path: string, alt = "") => ({ mediaId: mediaId(path), alt });
+
+  // --- Pages -------------------------------------------------------------
   const now = new Date().toISOString();
   const { data: pages, error: pagesError } = await db
     .from("pages")
@@ -102,7 +300,10 @@ async function main() {
         site_id: demoSite.id,
         slug: "/",
         title: "Home",
-        seo: { description: "Reliable plumbing for the whole metro." },
+        seo: {
+          description:
+            "Reliable plumbing for the whole metro — 24/7 call-outs, honest pricing, certified installers.",
+        },
         status: "published",
         published_at: now,
         sort_order: 0,
@@ -111,7 +312,10 @@ async function main() {
         site_id: demoSite.id,
         slug: "/about",
         title: "About Us",
-        seo: { description: "Two decades of honest plumbing work." },
+        seo: {
+          description:
+            "Two decades of honest plumbing work: meet the team, browse recent projects, get in touch.",
+        },
         status: "published",
         published_at: now,
         sort_order: 1,
@@ -130,7 +334,7 @@ async function main() {
   if (pagesError) throw new Error(`pages: ${pagesError.message}`);
 
   const pageId = (siteId: string, slug: string) => {
-    const page = pages.find((p) => p.site_id === siteId && p.slug === slug);
+    const page = pages.find((pg) => pg.site_id === siteId && pg.slug === slug);
     if (!page) throw new Error(`seeded page not found: ${slug}`);
     return page.id;
   };
@@ -138,23 +342,35 @@ async function main() {
   const demoAbout = pageId(demoSite.id, "/about");
   const otherHome = pageId(otherSite.id, "/");
 
-  // Placeholder section types — the real registry lands in Phase 2.
+  // --- Sections: all 10 v1 registry types --------------------------------
   const { error: sectionsError } = await db.from("sections").insert([
+    // Home
     {
       page_id: demoHome,
       section_type: "hero",
       props: {
         heading: "Plumbing done right, the first time",
-        subheading: "24/7 call-outs across the metro.",
+        subheading:
+          "Licensed, insured and on time — 24/7 call-outs across the metro.",
+        cta: { label: "Get a free quote", href: "/about" },
+        image: img("hero.jpg"),
+        variant: "split",
       },
       sort_order: 0,
       status: "published",
     },
     {
       page_id: demoHome,
-      section_type: "rich_text",
+      section_type: "logo_strip",
       props: {
-        body: "Family-owned since 2004. Licensed, insured, and on time.",
+        heading: "Trusted by local businesses",
+        logos: [
+          img("logo-1.png"),
+          img("logo-2.png"),
+          img("logo-3.png"),
+          img("logo-4.png"),
+          img("logo-5.png"),
+        ],
       },
       sort_order: 1,
       status: "published",
@@ -163,37 +379,223 @@ async function main() {
       page_id: demoHome,
       section_type: "feature_grid",
       props: {
+        eyebrow: "Services",
+        heading: "What we do",
+        intro: "From burst pipes to full bathroom renovations, one call covers it.",
         items: [
-          { title: "Emergency repairs", description: "There in under an hour." },
-          { title: "Geyser installs", description: "Certified installers." },
-          { title: "Leak detection", description: "Non-invasive tracing." },
+          { title: "Emergency repairs", description: "There in under an hour, day or night." },
+          { title: "Geyser installs", description: "Certified installers, all major brands." },
+          { title: "Leak detection", description: "Non-invasive tracing, no broken walls." },
+          { title: "Bathroom renovations", description: "Design to done in three weeks." },
+          { title: "Drain cleaning", description: "Camera inspections and jet cleaning." },
+          { title: "Solar geysers", description: "Cut your water-heating bill in half." },
         ],
+        columns: 3,
       },
       sort_order: 2,
       status: "published",
     },
     {
-      // Draft on purpose: the content API must not return this one.
+      page_id: demoHome,
+      section_type: "image_text_split",
+      props: {
+        heading: "A workshop on wheels",
+        body: doc(
+          p(
+            "Every van carries the full catalogue of fittings, valves and geyser spares, so ninety percent of jobs are finished on the first visit.",
+          ),
+          p("No quotes-then-disappear. We price on site and start immediately."),
+        ),
+        image: img("workshop.jpg"),
+        imagePosition: "right",
+      },
+      sort_order: 3,
+      status: "published",
+    },
+    {
+      page_id: demoHome,
+      section_type: "testimonials",
+      props: {
+        heading: "What clients say",
+        items: [
+          {
+            quote: "They found a slab leak two other companies missed — and fixed it the same day.",
+            author: "Sarah M.",
+            role: "Homeowner, Parkhurst",
+          },
+          {
+            quote: "Our restaurant can't afford downtime. Demo Plumbing has kept us running for six years.",
+            author: "Luca B.",
+            role: "Owner, Harbourview Café",
+          },
+          {
+            quote: "Punctual, tidy, and the invoice matched the quote to the cent.",
+            author: "Thandi N.",
+            role: "Property manager",
+          },
+        ],
+      },
+      sort_order: 4,
+      status: "published",
+    },
+    {
       page_id: demoHome,
       section_type: "cta_banner",
-      props: { heading: "Winter special — 10% off geyser services" },
-      sort_order: 3,
+      props: {
+        heading: "Burst geyser at 2 a.m.?",
+        body: "Our emergency line is answered by a plumber, not a call centre.",
+        cta: { label: "Call us 24/7", href: "tel:+27115550123" },
+        variant: "accent",
+      },
+      sort_order: 5,
+      status: "published",
+    },
+    {
+      // Draft on purpose: must not appear in published output.
+      page_id: demoHome,
+      section_type: "cta_banner",
+      props: {
+        heading: "Winter special — 10% off geyser services",
+        body: "Book before the end of August and save on any geyser call-out.",
+        cta: { label: "Book a service", href: "/about" },
+        variant: "subtle",
+      },
+      sort_order: 6,
       status: "draft",
     },
+
+    // About
     {
       page_id: demoAbout,
       section_type: "rich_text",
-      props: { body: "We started with one van and a promise: no callout fees." },
+      props: {
+        body: doc(
+          h(1, "About Demo Plumbing Co"),
+          p(
+            "We started in 2004 with one van and a promise: no callout fees, no surprises on the invoice.",
+          ),
+          p(
+            "Today a team of twelve certified plumbers covers the whole metro, but the promise hasn't changed.",
+          ),
+          h(2, "Our promise"),
+          bullets(
+            "Answered by a plumber, not a call centre",
+            "Priced on site before work starts",
+            "Workmanship guaranteed for 24 months",
+          ),
+        ),
+        width: "narrow",
+      },
       sort_order: 0,
       status: "published",
     },
     {
       page_id: demoAbout,
-      section_type: "cta_banner",
-      props: { heading: "Get a free quote today" },
+      section_type: "image_text_split",
+      props: {
+        heading: "Meet the team",
+        body: doc(
+          p(
+            "Every plumber on our books is PIRB-registered and background-checked, and apprentices always work alongside a master plumber.",
+          ),
+        ),
+        image: img("team.jpg"),
+        imagePosition: "left",
+      },
       sort_order: 1,
       status: "published",
     },
+    {
+      page_id: demoAbout,
+      section_type: "gallery",
+      props: {
+        heading: "Recent projects",
+        images: [
+          img("gallery-1.jpg"),
+          img("gallery-2.jpg"),
+          img("gallery-3.jpg"),
+          img("gallery-4.jpg"),
+          img("gallery-5.jpg"),
+          img("gallery-6.jpg"),
+        ],
+        columns: 3,
+      },
+      sort_order: 2,
+      status: "published",
+    },
+    {
+      page_id: demoAbout,
+      section_type: "faq_accordion",
+      props: {
+        heading: "Frequently asked questions",
+        items: [
+          {
+            question: "Do you charge a callout fee?",
+            answer: "No. You pay for work done, not for us arriving.",
+          },
+          {
+            question: "Are you available on weekends?",
+            answer:
+              "Yes — the emergency line runs 24/7, every day of the year.\n\nScheduled (non-emergency) work is booked Monday to Saturday.",
+          },
+          {
+            question: "Is your work guaranteed?",
+            answer: "All workmanship carries a 24-month guarantee, on top of manufacturer warranties.",
+          },
+          {
+            question: "Which areas do you cover?",
+            answer: "The full metro area. For large projects we travel further — ask us.",
+          },
+        ],
+      },
+      sort_order: 3,
+      status: "published",
+    },
+    {
+      page_id: demoAbout,
+      section_type: "contact_form",
+      props: {
+        heading: "Get in touch",
+        intro: "Tell us what's leaking, dripping or blocked and we'll come prepared.",
+        showPhone: true,
+        submitLabel: "Send message",
+        successMessage: "Thanks — we'll get back to you within one working day.",
+      },
+      sort_order: 4,
+      status: "published",
+    },
+    {
+      page_id: demoAbout,
+      section_type: "cta_banner",
+      props: {
+        heading: "Prefer to talk?",
+        body: "Weekdays 7:00–18:00 you'll reach the workshop directly.",
+        cta: { label: "011 555 0123", href: "tel:+27115550123" },
+        variant: "subtle",
+      },
+      sort_order: 5,
+      status: "published",
+    },
+    {
+      // INVALID PROPS on purpose (published): heading fails min(1), variant
+      // not in enum. Production renders nothing; preview shows an error card.
+      page_id: demoAbout,
+      section_type: "hero",
+      props: { heading: "", variant: "diagonal" },
+      sort_order: 6,
+      status: "published",
+    },
+    {
+      // UNKNOWN TYPE on purpose (published): not in the registry.
+      // Production renders nothing; preview shows an error card.
+      page_id: demoAbout,
+      section_type: "legacy_widget",
+      props: { html: "<marquee>Welcome to our homepage!</marquee>" },
+      sort_order: 7,
+      status: "published",
+    },
+
+    // Other site (RLS isolation fixture)
     {
       page_id: otherHome,
       section_type: "hero",
@@ -205,7 +607,10 @@ async function main() {
   if (sectionsError) throw new Error(`sections: ${sectionsError.message}`);
 
   console.log("Seed complete.");
-  console.log(`  demo-site  ${demoSite.id} (2 pages, 6 sections, 1 draft)`);
+  console.log(
+    `  demo-site  ${demoSite.id} (2 pages, 15 sections: 12 valid published, 1 draft, 1 invalid-props, 1 unknown-type)`,
+  );
+  console.log(`  media      ${assets.length} placeholder assets in bucket ${bucket}`);
   console.log(`  other-site ${otherSite.id} (RLS isolation fixture)`);
   console.log(`  users: ${seedEmails.join(", ")} (password: local-dev-password)`);
   console.log(`  demo-site content API key: ${DEMO_SITE_API_KEY}`);
