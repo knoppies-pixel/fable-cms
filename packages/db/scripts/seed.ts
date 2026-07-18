@@ -13,6 +13,8 @@
  * and users on every run. Run with: pnpm db:seed
  */
 import { createHash, randomBytes } from "node:crypto";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import sharp from "sharp";
 import type { Database } from "../src/types";
@@ -163,7 +165,7 @@ async function deleteSiteBucket(db: SupabaseClient<Database>, siteId: string) {
   }
 }
 
-async function main() {
+export async function seed() {
   const db = createClient<Database>(SUPABASE_URL, SERVICE_ROLE_KEY, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
@@ -616,7 +618,16 @@ async function main() {
   console.log(`  demo-site content API key: ${DEMO_SITE_API_KEY}`);
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+// Runs as a CLI via `pnpm db:seed`; acceptance suites import { seed } and
+// await it as their first step instead, so a stray suite-created row can
+// never fail a later suite. (Case-normalized compare: Windows drive letters.)
+const invokedDirectly =
+  process.argv[1] !== undefined &&
+  pathToFileURL(resolve(process.argv[1])).href.toLowerCase() ===
+    import.meta.url.toLowerCase();
+if (invokedDirectly) {
+  seed().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

@@ -14,6 +14,7 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DEMO_SITE_API_KEY, SUPABASE_URL } from "./local-env";
+import { seed } from "./seed";
 
 const CONTENT_API_BASE = process.env.CONTENT_API_BASE ?? "http://localhost:3000";
 const SITE_BASE = process.env.SITE_BASE ?? "http://localhost:3001";
@@ -46,6 +47,7 @@ async function fetchContent(drafts: boolean): Promise<ContentPayload> {
 }
 
 async function main() {
+  await seed(); // fresh fixtures every run — suites are order-independent
   console.log("--- Content API: media + drafts ---");
 
   const published = await fetchContent(false);

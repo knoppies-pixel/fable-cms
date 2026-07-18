@@ -9,6 +9,7 @@
  *   pnpm --filter @fable/db exec tsx ../../scripts/phase3-acceptance.ts
  */
 import { chromium, type Locator, type Page } from "playwright";
+import { seed } from "../packages/db/scripts/seed";
 
 const BASE = "http://localhost:3000";
 const API_KEY = "local-dev-demo-content-key";
@@ -82,6 +83,7 @@ async function pickImage(page: Page, thumbTitle: string) {
 }
 
 async function main() {
+  await seed(); // fresh fixtures every run — suites are order-independent
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   const page = await browser.newPage();
   page.on("dialog", (dialog) => void dialog.accept());

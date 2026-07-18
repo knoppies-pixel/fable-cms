@@ -17,6 +17,7 @@ import {
   SERVICE_ROLE_KEY,
   SUPABASE_URL,
 } from "./local-env";
+import { seed } from "./seed";
 
 const CONTENT_API_BASE =
   process.env.CONTENT_API_BASE ?? "http://localhost:3000";
@@ -31,6 +32,7 @@ function check(name: string, ok: boolean, detail?: unknown) {
 }
 
 async function main() {
+  await seed(); // fresh fixtures every run — suites are order-independent
   const service = createClient<Database>(SUPABASE_URL, SERVICE_ROLE_KEY, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
