@@ -10,6 +10,9 @@
  * built site running (SITE_BASE, default :3001). Lighthouse runs separately.
  * Run with: pnpm db:test:phase2
  */
+import { spawnSync } from "node:child_process";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { DEMO_SITE_API_KEY, SUPABASE_URL } from "./local-env";
 
 const CONTENT_API_BASE = process.env.CONTENT_API_BASE ?? "http://localhost:3000";
@@ -167,6 +170,70 @@ async function main() {
   check(
     "preview home renders the draft section with a draft badge",
     previewHome.includes("Winter special") && previewHome.includes("data-draft-section"),
+  );
+
+  console.log("\n--- Config guard: image host must derive or fail loudly ---");
+
+  // Broken images in production is the silent failure we design against:
+  // evaluate the site's next.config.ts under controlled env (it has no
+  // runtime imports) and assert the guard fires exactly when it should.
+  const siteConfigPath = join(
+    fileURLToPath(new URL(".", import.meta.url)),
+    "..", "..", "..", "apps", "site-template", "next.config.ts",
+  );
+  const evalConfig = (env: Record<string, string | undefined>) => {
+    const childEnv: NodeJS.ProcessEnv = { ...process.env, ...env };
+    for (const [key, value] of Object.entries(env)) {
+      if (value === undefined) delete childEnv[key];
+    }
+    return spawnSync("npx", ["tsx", siteConfigPath], {
+      env: childEnv,
+      shell: true,
+      encoding: "utf8",
+      timeout: 60_000,
+    });
+  };
+
+  const prodMissing = evalConfig({
+    NODE_ENV: "production",
+    NEXT_PUBLIC_SUPABASE_URL: undefined,
+  });
+  check(
+    "production config throws when NEXT_PUBLIC_SUPABASE_URL is unset",
+    prodMissing.status !== 0 &&
+      prodMissing.stderr.includes("NEXT_PUBLIC_SUPABASE_URL is required"),
+    { status: prodMissing.status, stderr: prodMissing.stderr.slice(0, 200) },
+  );
+
+  const prodGarbage = evalConfig({
+    NODE_ENV: "production",
+    NEXT_PUBLIC_SUPABASE_URL: "not-a-url",
+  });
+  check(
+    "production config throws on an unparseable NEXT_PUBLIC_SUPABASE_URL",
+    prodGarbage.status !== 0 &&
+      prodGarbage.stderr.includes("not a valid URL"),
+    { status: prodGarbage.status, stderr: prodGarbage.stderr.slice(0, 200) },
+  );
+
+  const prodValid = evalConfig({
+    NODE_ENV: "production",
+    NEXT_PUBLIC_SUPABASE_URL: SUPABASE_URL,
+  });
+  check(
+    "production config loads with a valid NEXT_PUBLIC_SUPABASE_URL (control)",
+    prodValid.status === 0,
+    { status: prodValid.status, stderr: prodValid.stderr.slice(0, 200) },
+  );
+
+  const devMissing = evalConfig({
+    NODE_ENV: "development",
+    NEXT_PUBLIC_SUPABASE_URL: undefined,
+  });
+  check(
+    "development config still falls back to the local stack when unset",
+    devMissing.status === 0,
+    { status: devMissing.status, stderr: devMissing.stderr.slice(0, 200) },
   );
 
   console.log("\n--- SEO plumbing ---");
