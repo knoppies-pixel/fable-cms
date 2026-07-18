@@ -4,6 +4,13 @@ import { serviceClient } from "@/lib/service-client";
 
 export const dynamic = "force-dynamic";
 
+// Resolved at module load so a missing var fails the build/startup loudly
+// instead of emitting "undefined/storage/..." media URLs per request.
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+if (!SUPABASE_URL) {
+  throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL (needed for media URLs)");
+}
+
 function extractApiKey(request: Request): string | null {
   const headerKey = request.headers.get("x-api-key");
   if (headerKey) return headerKey;
@@ -84,7 +91,7 @@ export async function GET(
   }
 
   // Public bucket URLs — one bucket per site, media-{site_id} (spec §3).
-  const storageBase = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/media-${site.id}`;
+  const storageBase = `${SUPABASE_URL}/storage/v1/object/public/media-${site.id}`;
   const media = (mediaRows ?? []).map((row) => ({
     id: row.id,
     url: `${storageBase}/${row.path}`,

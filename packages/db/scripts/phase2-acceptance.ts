@@ -10,7 +10,7 @@
  * built site running (SITE_BASE, default :3001). Lighthouse runs separately.
  * Run with: pnpm db:test:phase2
  */
-import { DEMO_SITE_API_KEY } from "./local-env";
+import { DEMO_SITE_API_KEY, SUPABASE_URL } from "./local-env";
 
 const CONTENT_API_BASE = process.env.CONTENT_API_BASE ?? "http://localhost:3000";
 const SITE_BASE = process.env.SITE_BASE ?? "http://localhost:3001";
@@ -54,6 +54,14 @@ async function main() {
       ),
     published.media.slice(0, 2),
   );
+  check(
+    "media URLs start with the configured Supabase origin",
+    published.media.length > 0 &&
+      published.media.every((m) =>
+        m.url.startsWith(`${SUPABASE_URL}/storage/v1/object/public/media-`),
+      ),
+    published.media.slice(0, 1),
+  );
   const publishedSections = published.pages.flatMap((p) => p.sections);
   check(
     "published payload has no draft sections",
@@ -80,6 +88,21 @@ async function main() {
   check(
     "home renders images through the CMS media pipeline",
     prodHome.includes("hero.jpg") || prodHome.includes("/_next/image"),
+  );
+  // Grepping HTML is not enough — the optimizer can 400 on a URL the page
+  // happily embeds (e.g. blocked local IPs). Fetch a real optimized image.
+  const imgSrc = prodHome
+    .match(/src="(\/_next\/image[^"]+)"/)?.[1]
+    ?.replace(/&amp;/g, "&");
+  const imgResponse = imgSrc
+    ? await fetch(`${SITE_BASE}${imgSrc}`)
+    : null;
+  check(
+    "image optimizer serves an actual image (200, image/*)",
+    imgResponse !== null &&
+      imgResponse.status === 200 &&
+      (imgResponse.headers.get("content-type") ?? "").startsWith("image/"),
+    { imgSrc, status: imgResponse?.status },
   );
   check(
     "draft section (Winter special) is NOT rendered in production",

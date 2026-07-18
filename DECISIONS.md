@@ -80,3 +80,10 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
 - **Seed proves failure modes on purpose:** `/about` carries one published invalid-props hero
   and one unknown `legacy_widget` section (error cards in preview, nothing in production),
   and home carries one draft CTA. Acceptance scripts assert all three.
+- **Hardening follow-up: Supabase origin is env-derived end to end.** The content route
+  resolves `NEXT_PUBLIC_SUPABASE_URL` at module load (missing var fails the build, not
+  per-request with `undefined` URLs); the site's `next/image` `remotePatterns` are parsed
+  from the same var. Found in the process: Next 16's optimizer blocks local/private IPs
+  (SSRF protection) even when allowlisted, so images had been silently 400ing in local
+  prod builds — `dangerouslyAllowLocalIP` is now enabled only when the Supabase host is
+  localhost, and the phase-2 suite fetches a real optimized image instead of grepping HTML.
