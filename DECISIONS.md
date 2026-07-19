@@ -113,6 +113,43 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
   the contact endpoint still validates and logs only. It needs env plumbing (Resend key,
   per-site notification address in `sites.settings`) that fits Phase 5's `create-site.ts`.
 
+## Phase 4
+
+- **Per-site delivery config lives in `sites.settings.delivery`** (`siteUrl`,
+  `previewSecret`, `revalidateSecret`): the multi-tenant admin needs per-site values, and
+  `settings` is the spec's home for per-site config. Tradeoff: site members (incl.
+  client editors) can read their own site's secrets — accepted, since editors already see
+  drafts through the admin and revalidation is an idempotent cache purge. Missing config
+  degrades gracefully (no preview pane, no ping). Phase 5's `create-site.ts` writes it.
+- **Revalidation is best-effort, never blocks a save.** Every content mutation
+  (props save, add/duplicate/delete, reorder, status change) pings the site's
+  `POST /api/revalidate` after the row is written; a failed ping surfaces as
+  `ActionResult.warning`, not an error. The endpoint does
+  `revalidateTag("cms-content", "max")` (Next 16 requires the cache-profile arg; "max" =
+  classic expire-now) plus a layout-wide `revalidatePath` — reorders/publishes affect nav
+  and multiple pages, and content changes are rare enough that a site-wide purge is fine.
+- **Reorder = optimistic client order synced from server props.** `SectionList` holds the
+  id order in state (applied instantly on drop, reverted on failure) and resyncs via
+  `useEffect` when a server refresh changes the id set. `reorderSections` rejects orders
+  that aren't a permutation of the page's current sections (stale list ⇒ friendly error,
+  not silent corruption) and writes `sort_order = index`. The drag handle is
+  keyboard-accessible (Space + arrows, dnd-kit KeyboardSensor) — the acceptance suite
+  drives that path, which doubles as an a11y check.
+- **Publishing stays studio-only** — revisited as planned and kept: the Phase 1 column
+  guard still blocks `client_editor` from `status`, so the new toggles return the
+  friendly 42501 message for editors. Loosen only if clients ask for self-serve publishing.
+  `published_at` semantics: publish sets `now()`, unpublish nulls it.
+- **Preview iframe relies on same-site draft-mode cookies.** localhost:3000 embedding
+  localhost:3001 is same-site, so the `__prerender_bypass` cookie set by `/api/draft`
+  works inside the iframe. A production admin on a different registrable domain than the
+  client site would hit third-party-cookie blocking — the "Open ↗" button (top-level
+  navigation) is the fallback; revisit with a token-in-query preview if it bites (Phase 5).
+- **Suites resync the site server after reseeding.** The re-seed convention plus a
+  long-lived `next start` site meant phase 2's assertions read the previous suite's
+  cached pages; phase 2 now POSTs `/api/revalidate` right after seeding and waits for the
+  fresh home page. Phase 4's own suite (`pnpm test:phase4`) requires the site running a
+  production build — a dev server would pass the 10-second assertion trivially.
+
 - **Hardening follow-up: Supabase origin is env-derived end to end.** The content route
   resolves `NEXT_PUBLIC_SUPABASE_URL` at module load (missing var fails the build, not
   per-request with `undefined` URLs); the site's `next/image` `remotePatterns` are parsed

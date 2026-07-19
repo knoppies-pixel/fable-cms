@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getRegistryEntry } from "@fable/sections";
+import { revalidateSite } from "./site-delivery";
 import { requireUser } from "./supabase/server";
 
 /**
@@ -11,10 +12,14 @@ import { requireUser } from "./supabase/server";
  * RLS-scoped client, so Postgres policies (site membership, role, column
  * guards) are the enforcement layer — these actions only add input
  * validation and friendly errors on top.
+ *
+ * Every successful content mutation pings the site's /api/revalidate
+ * (revalidateSite) so published output updates within seconds. A failed ping
+ * comes back as a non-fatal `warning` — the row is already saved.
  */
 
 export type ActionResult =
-  | { ok: true }
+  | { ok: true; warning?: string }
   | { ok: false; error: string; fieldErrors?: Record<string, string[]> };
 
 const fail = (error: string): ActionResult => ({ ok: false, error });
@@ -102,7 +107,7 @@ export async function addSection(
   }
 
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
-  return { ok: true };
+  return { ok: true, warning: await revalidateSite(supabase, siteId) };
 }
 
 export async function duplicateSection(
@@ -140,7 +145,7 @@ export async function duplicateSection(
   }
 
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
-  return { ok: true };
+  return { ok: true, warning: await revalidateSite(supabase, siteId) };
 }
 
 export async function deleteSection(
@@ -161,7 +166,7 @@ export async function deleteSection(
   if (count === 0) return fail("Section not found (or no permission to delete it).");
 
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
-  return { ok: true };
+  return { ok: true, warning: await revalidateSite(supabase, siteId) };
 }
 
 export async function saveSectionProps(
@@ -207,5 +212,110 @@ export async function saveSectionProps(
 
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
   revalidatePath(`/sites/${siteId}/pages/${pageId}/sections/${sectionId}`);
-  return { ok: true };
+  return { ok: true, warning: await revalidateSite(supabase, siteId) };
+}
+
+// --- Ordering & publishing (Phase 4) ---------------------------------------
+
+export async function reorderSections(
+  siteId: string,
+  pageId: string,
+  orderedIds: string[],
+): Promise<ActionResult> {
+  const { supabase } = await requireUser();
+
+  const idsCheck = z.array(z.uuid()).min(1).safeParse(orderedIds);
+  if (!idsCheck.success) return fail("Invalid section order.");
+
+  // The new order must be a permutation of the page's current sections —
+  // otherwise the caller's list is stale (concurrent add/delete).
+  const { data: rows, error: rowsError } = await supabase
+    .from("sections")
+    .select("id")
+    .eq("page_id", pageId);
+  if (rowsError || !rows) return fail("Could not load the page's sections.");
+  const current = new Set(rows.map((row) => row.id));
+  if (
+    idsCheck.data.length !== current.size ||
+    idsCheck.data.some((id) => !current.has(id))
+  ) {
+    return fail("The section list changed underneath you — reload and try again.");
+  }
+
+  const results = await Promise.all(
+    idsCheck.data.map((id, index) =>
+      supabase
+        .from("sections")
+        .update({ sort_order: index })
+        .eq("id", id)
+        .eq("page_id", pageId),
+    ),
+  );
+  const failure = results.find((result) => result.error)?.error;
+  revalidatePath(`/sites/${siteId}/pages/${pageId}`);
+  if (failure) {
+    if (failure.code === "42501") {
+      return fail("Only studio admins can reorder sections.");
+    }
+    return fail("Could not save the new order.");
+  }
+
+  return { ok: true, warning: await revalidateSite(supabase, siteId) };
+}
+
+const publishStatus = z.enum(["draft", "published"]);
+
+export async function setPageStatus(
+  siteId: string,
+  pageId: string,
+  status: "draft" | "published",
+): Promise<ActionResult> {
+  const { supabase } = await requireUser();
+  const statusCheck = publishStatus.safeParse(status);
+  if (!statusCheck.success) return fail("Invalid status.");
+
+  const patch =
+    statusCheck.data === "published"
+      ? { status: statusCheck.data, published_at: new Date().toISOString() }
+      : { status: statusCheck.data, published_at: null };
+  const { error, count } = await supabase
+    .from("pages")
+    .update(patch, { count: "exact" })
+    .eq("id", pageId)
+    .eq("site_id", siteId);
+  if (error) {
+    if (error.code === "42501") return fail("Only studio admins can publish pages.");
+    return fail("Could not update the page status.");
+  }
+  if (count === 0) return fail("Page not found.");
+
+  revalidatePath(`/sites/${siteId}/pages`);
+  revalidatePath(`/sites/${siteId}/pages/${pageId}`);
+  return { ok: true, warning: await revalidateSite(supabase, siteId) };
+}
+
+export async function setSectionStatus(
+  siteId: string,
+  pageId: string,
+  sectionId: string,
+  status: "draft" | "published",
+): Promise<ActionResult> {
+  const { supabase } = await requireUser();
+  const statusCheck = publishStatus.safeParse(status);
+  if (!statusCheck.success) return fail("Invalid status.");
+
+  const { error, count } = await supabase
+    .from("sections")
+    .update({ status: statusCheck.data }, { count: "exact" })
+    .eq("id", sectionId)
+    .eq("page_id", pageId);
+  if (error) {
+    if (error.code === "42501") return fail("Only studio admins can publish sections.");
+    return fail("Could not update the section status.");
+  }
+  if (count === 0) return fail("Section not found.");
+
+  revalidatePath(`/sites/${siteId}/pages/${pageId}`);
+  revalidatePath(`/sites/${siteId}/pages/${pageId}/sections/${sectionId}`);
+  return { ok: true, warning: await revalidateSite(supabase, siteId) };
 }

@@ -19,6 +19,7 @@ import { seed } from "./seed";
 const CONTENT_API_BASE = process.env.CONTENT_API_BASE ?? "http://localhost:3000";
 const SITE_BASE = process.env.SITE_BASE ?? "http://localhost:3001";
 const PREVIEW_SECRET = process.env.PREVIEW_SECRET ?? "local-preview-secret";
+const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET ?? "local-revalidate-secret";
 
 let failures = 0;
 function check(name: string, ok: boolean, detail?: unknown) {
@@ -48,6 +49,32 @@ async function fetchContent(drafts: boolean): Promise<ContentPayload> {
 
 async function main() {
   await seed(); // fresh fixtures every run — suites are order-independent
+
+  // The site server is long-lived and its ISR cache still holds whatever the
+  // previous suite left behind — resync it to the fresh seed via Phase 4's
+  // on-demand revalidation, and wait until the seeded home page is served.
+  const resync = await fetch(`${SITE_BASE}/api/revalidate`, {
+    method: "POST",
+    headers: { "x-revalidate-secret": REVALIDATE_SECRET },
+  });
+  if (!resync.ok) {
+    throw new Error(`site /api/revalidate failed: HTTP ${resync.status}`);
+  }
+  const resyncDeadline = Date.now() + 15_000;
+  for (;;) {
+    const html = await (await fetch(`${SITE_BASE}/`)).text();
+    if (
+      html.includes("Plumbing done right, the first time") &&
+      !html.includes("Winter special")
+    ) {
+      break;
+    }
+    if (Date.now() > resyncDeadline) {
+      throw new Error("production site did not resync to the fresh seed");
+    }
+    await new Promise((resolve) => setTimeout(resolve, 400));
+  }
+
   console.log("--- Content API: media + drafts ---");
 
   const published = await fetchContent(false);

@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getRegistryEntry, type SectionType } from "@fable/sections";
 import { requireUser } from "@/lib/supabase/server";
-import { SectionForm } from "@/components/section-form/section-form";
-import { StatusBadge } from "@/components/status-badge";
+import { getSiteDelivery, sitePreviewUrl } from "@/lib/site-delivery";
+import { PublishToggle } from "@/components/publish-toggle";
+import { SectionEditor } from "@/components/section-editor";
 
 export default async function SectionEditorPage({
   params,
@@ -13,7 +14,7 @@ export default async function SectionEditorPage({
   const { siteId, pageId, sectionId } = await params;
   const { supabase } = await requireUser();
 
-  const [{ data: page }, { data: section }] = await Promise.all([
+  const [{ data: page }, { data: section }, delivery] = await Promise.all([
     supabase
       .from("pages")
       .select("id, title, slug")
@@ -26,6 +27,7 @@ export default async function SectionEditorPage({
       .eq("id", sectionId)
       .eq("page_id", pageId)
       .maybeSingle(),
+    getSiteDelivery(supabase, siteId),
   ]);
   if (!page || !section) notFound();
 
@@ -43,16 +45,22 @@ export default async function SectionEditorPage({
         <h2 className="text-lg font-semibold">
           {entry?.meta.label ?? section.section_type}
         </h2>
-        <StatusBadge status={section.status} />
+        <PublishToggle
+          siteId={siteId}
+          pageId={pageId}
+          sectionId={sectionId}
+          status={section.status}
+        />
       </div>
 
       {entry ? (
-        <SectionForm
+        <SectionEditor
           siteId={siteId}
           pageId={pageId}
           sectionId={sectionId}
           sectionType={section.section_type as SectionType}
           initialProps={section.props}
+          previewSrc={sitePreviewUrl(delivery, page.slug)}
         />
       ) : (
         <div className="max-w-2xl rounded-card bg-surface p-6 shadow-sm ring-1 ring-black/5">

@@ -228,7 +228,16 @@ export async function seed() {
         },
         radius: { card: "0.75rem", btn: "0.5rem" },
       },
-      settings: { social: { instagram: "@demoplumbing" } },
+      settings: {
+        social: { instagram: "@demoplumbing" },
+        // Where this site is deployed + how the admin talks to it (preview
+        // iframe, on-demand revalidation). Mirrors site-template/.env.local.
+        delivery: {
+          siteUrl: "http://localhost:3001",
+          previewSecret: "local-preview-secret",
+          revalidateSecret: "local-revalidate-secret",
+        },
+      },
       api_key_hash: sha256Hex(DEMO_SITE_API_KEY),
     })
     .select("id")

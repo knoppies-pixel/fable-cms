@@ -22,12 +22,14 @@ export function SectionForm({
   sectionId,
   sectionType,
   initialProps,
+  onSaved,
 }: {
   siteId: string;
   pageId: string;
   sectionId: string;
   sectionType: SectionType;
   initialProps: unknown;
+  onSaved?: () => void;
 }) {
   const entry = registry[sectionType];
   const root = useMemo(() => analyzeSchema(entry.schema), [entry]);
@@ -45,6 +47,7 @@ export function SectionForm({
     return parsed.success ? {} : collectErrors(parsed.error);
   });
   const [formError, setFormError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -66,6 +69,7 @@ export function SectionForm({
 
   const save = () => {
     setSaved(false);
+    setWarning(null);
     const parsed = entry.schema.safeParse(values);
     if (!parsed.success) {
       setErrors(collectErrors(parsed.error));
@@ -84,6 +88,8 @@ export function SectionForm({
       if (result.ok) {
         setValues(parsed.data as Record<string, unknown>);
         setSaved(true);
+        setWarning(result.warning ?? null);
+        onSaved?.();
       } else {
         setErrors(result.fieldErrors ?? {});
         setFormError(result.error);
@@ -120,6 +126,7 @@ export function SectionForm({
           {pending ? "Saving…" : "Save section"}
         </button>
         {saved && <span className="text-sm text-emerald-700">Saved ✓</span>}
+        {warning && <span className="text-sm text-amber-700">{warning}</span>}
         {formError && <span className="text-sm text-red-600">{formError}</span>}
         {errors._root && (
           <span className="text-sm text-red-600">{errors._root.join(" ")}</span>

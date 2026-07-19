@@ -10,7 +10,8 @@
     "db:seed": "pnpm --filter @fable/db seed",
     "db:test": "pnpm --filter @fable/db test:phase1",
     "db:test:phase2": "pnpm --filter @fable/db test:phase2",
-    "test:phase3": "pnpm --filter @fable/db exec tsx ../../scripts/phase3-acceptance.ts"
+    "test:phase3": "pnpm --filter @fable/db exec tsx ../../scripts/phase3-acceptance.ts",
+    "test:phase4": "pnpm --filter @fable/db exec tsx ../../scripts/phase4-acceptance.ts"
   },
   "devDependencies": {
     "playwright": "^1.61.1",
