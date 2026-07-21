@@ -202,3 +202,58 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
   re-verify home LCP against a real Vercel preview (HTTP/2, genuine mobile RTT) before treating
   94 as a true production number — this was a documented risk in design/DIRECTION.md's "Reference
   provenance" territory, now made concrete.
+
+## Phase 5
+
+- **§8.2 design-direction run executed as a proof of process on a disposable pilot**
+  (Fynbos & Fern, indigenous garden design — deliberately a different vertical, palette and
+  radius language than Refined Coastal so the run proves retheming, not defaults). Claude
+  Design wasn't driven; a static exploration sheet stands in. The tool is swappable — the
+  **artifact contract** is what `kb/README.md` now pins: 2–3 named directions → refinement →
+  distillation into `kb/{client}/tokens.json` + `design/DIRECTION.md` with a **measured WCAG
+  audit** of every implied text/ground pairing before tokens are committed. The pilot run
+  caught real values this way (v0.1 clay measured 4.50:1 on its mist ground — zero AA margin —
+  and was deepened; straw demoted to ornament-only at 2.41).
+- **`create-site.ts` refuses, never repairs.** Existing slug or existing `sites/{slug}` dir is
+  a hard stop — the script never rotates keys or overwrites a live site. The content key is
+  printed once; only its SHA-256 lands in `sites.api_key_hash` (same contract as the content
+  route). Delivery secrets (`previewSecret`, `revalidateSecret`) are generated per site and
+  written to both `sites.settings.delivery` and the clone's `.env.local`; the printed handoff
+  includes the Vercel env list and the post-domain `jsonb_set` for `delivery.siteUrl`.
+- **Client sites live at `sites/{slug}` as workspace members**, not standalone repos yet:
+  workspace deps (`@fable/db`, `@fable/sections`) ship raw TS and don't resolve outside the
+  monorepo. Vercel imports the monorepo with Root Directory `sites/{slug}` (or the folder is
+  pushed to a client repo once the Phase 7 exporter/vendoring story exists — same phase as the
+  spec's client-offboarding exporter). Each clone gets its own port pair (3002+, auto-picked
+  from existing clones) so several local dev servers coexist with the free-port pre-hooks.
+- **Typed seeding helper lives in the template (`scripts/seed-lib.ts`), not a package** — it's
+  cloned per site, matching the per-client-repo ownership model. `SectionSpec` types props via
+  `z.input` per registry entry (compile-time: wrong prop/enum/type rejected — verified with
+  `@ts-expect-error` probes), and every section is `safeParse`d before any row is written;
+  stored props are the schema-**parsed** output, matching the admin save action's normalization.
+  Media upserts by storage path with dimensions probed from JPEG/PNG headers (no image dep);
+  **pages are replaced wholesale** — the spec is the source of truth until content ownership
+  moves to the client's editors, then re-seeding stops. Seeding authenticates with the service
+  role from the **shell env** (local fallback = well-known local key) — recorded in CLAUDE.md
+  as the one sanctioned exception to "site code never talks to Supabase", which binds runtime
+  only.
+- **`pages.title` doubles as nav label and `<title>` base** — surfaced by the pilot when
+  SEO-length titles leaked into the header nav. v1 convention: keep titles nav-short; keyword
+  duty falls to meta descriptions and h1s. A future additive `seo.title` override fixes both
+  sides; deferred (needs the admin form + metadata plumbing, not Phase 5 scope).
+- **Full-workspace `pnpm build` has an ordering dependency**: the admin's own `prebuild`
+  frees :3000 (killing a running admin), and site builds fetch content from :3000 at static
+  generation. Sequence is therefore: build admin → start admin → build sites. `pnpm -r build`
+  alone self-defeats; acceptable for a studio-run monorepo, revisit if CI ever builds sites
+  (mock content API or build-time export would be the fix).
+- **Pilot Lighthouse (production `next start`, mobile preset): home 93 / about 96 /
+  portfolio 95, accessibility 100 and SEO 100 everywhere.** Home repeats Phase 4.5's
+  documented Lantern artifact (hero-image LCP re-timed to 3.2s under simulated mobile
+  bandwidth; desktop-preset control on the same build: 100, LCP 0.6s). Accepted on the same
+  grounds and same flag: re-verify on a real Vercel preview.
+- **Phase 5 gate run 2026-07-21:** phase 1–4 suites re-run green (22/23/27/16) plus the new
+  `pnpm test:phase5` (67 checks: key auth + isolation, kb-tokens fidelity through jsonb,
+  brief composition, per-section schema validation, media-ref integrity, seed idempotency,
+  dup-slug refusal). `form_submissions` persistence + Resend email stay deferred (spec §11
+  open decision — needs the studio's provider choice; the contact endpoint still validates
+  and logs).
