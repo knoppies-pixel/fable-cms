@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fynbos &amp; Fern — homepage design directions (v0.2)</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font: 15px/1.6 "Segoe UI", system-ui, sans-serif; color: #1e2419; background: #f2f0ea; padding: 3rem 2rem; }
+  main { max-width: 72rem; margin: 0 auto; }
+  h1 { font-size: 1.7rem; font-weight: 650; }
+  .sub { color: #5b6152; margin: .3rem 0 2.2rem; max-width: 55rem; }
+  .dir { background: #fff; border-radius: 12px; padding: 1.8rem 2rem; margin-bottom: 1.6rem; border: 1px solid #e0ddd2; }
+  .dir.chosen { border: 2px solid #8A4A1F; }
+  .dir h2 { font-size: 1.15rem; display: flex; align-items: baseline; gap: .7rem; }
+  .tag { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; padding: .15rem .55rem; border-radius: 99px; background: #ece9df; color: #5b6152; }
+  .chosen .tag { background: #8A4A1F; color: #fff; }
+  .cols { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 1.6rem; margin-top: 1rem; }
+  @media (max-width: 900px){ .cols { grid-template-columns: 1fr; } }
+  h3 { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: #8a8f80; margin-bottom: .5rem; }
+  .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: .4rem; }
+  .sw { border-radius: 8px; height: 3.4rem; padding: .35rem .45rem; font-size: .62rem; line-height: 1.25; border: 1px solid rgba(0,0,0,.08); display: flex; flex-direction: column; justify-content: flex-end; }
+  ul { padding-left: 1.1rem; }
+  li { margin-bottom: .3rem; }
+  .hero-sketch { border-radius: 10px; padding: 1.1rem 1.2rem; margin-top: .8rem; font-size: .8rem; }
+  .note { font-size: .8rem; color: #5b6152; margin-top: 1rem; border-top: 1px dashed #ddd8ca; padding-top: .8rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Fynbos &amp; Fern — homepage directions</h1>
+  <p class="sub">Three directions from the brief ("warm, grounded, quietly expert — protea silhouettes,
+  Cape granite, weathered timber; nothing glossy, nothing lime-green"). Each names a palette, type intent,
+  band rhythm and hero concept, composed only from sections the registry actually has.
+  v0.1 presented 2026-07-21 → refinements below → <strong>Direction A approved</strong>.</p>
+
+  <!-- A -->
+  <section class="dir chosen">
+    <h2>A — Protea Veld <span class="tag">Chosen · v0.2</span></h2>
+    <div class="cols">
+      <div>
+        <h3>Palette</h3>
+        <div class="swatches">
+          <div class="sw" style="background:#FBF8F1">Paper<br>#FBF8F1</div>
+          <div class="sw" style="background:#EDEFE3">Sage Mist<br>#EDEFE3</div>
+          <div class="sw" style="background:#22301F;color:#C9D2BE">Olive Ink<br>#22301F</div>
+          <div class="sw" style="background:#8A4A1F;color:#fff">Clay<br>#8A4A1F</div>
+          <div class="sw" style="background:#C79B45">Straw*<br>#C79B45</div>
+        </div>
+        <p style="font-size:.72rem;color:#8a8f80;margin-top:.4rem">*Straw = ornament only (fails text AA on paper: 2.41).
+        Text #243018 / muted #57614A / on-ink #C9D2BE / soft clay on ink #E4AC7C.</p>
+      </div>
+      <div>
+        <h3>Type &amp; shape</h3>
+        <ul>
+          <li>House pairing retained: Fraunces 600 display (its italic = the botanical accent voice), Albert Sans text.</li>
+          <li><strong>No pills.</strong> Timber-and-granite geometry: btn 0.5rem, field 0.375rem, card 0.75rem.</li>
+        </ul>
+        <h3 style="margin-top:.9rem">Band rhythm</h3>
+        <ul>
+          <li>Paper → Mist alternation; Olive Ink once per page (testimonials), twice max with the final CTA.</li>
+          <li>Edges: <em>shore</em> + <em>tide</em> as the house pairing (soft dune profiles), <em>swell</em> reserved for the entry into ink.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Hero concept</h3>
+        <div class="hero-sketch" style="background:#FBF8F1;border:1px solid #e4e0d2">
+          <div style="font-family:Georgia,serif;font-size:1.15rem;color:#243018">We plant what <em style="color:#8A4A1F">belongs here.</em></div>
+          <div style="color:#57614A;margin:.3rem 0 .6rem">Split hero: garden photo right, promise + consult CTA left.</div>
+          <div style="display:inline-block;background:#8A4A1F;color:#fff;border-radius:.5rem;padding:.3rem .8rem;font-size:.72rem">Book a consultation</div>
+        </div>
+        <p style="font-size:.75rem;color:#5b6152;margin-top:.5rem">Depth: escape-crop portraits on ink; straw dot-grids in corners only. Motion: fadeUp/staggerReveal, no pinning.</p>
+      </div>
+    </div>
+    <p class="note"><strong>v0.1 → v0.2 refinements (measured):</strong> clay deepened #A15A28 → #8A4A1F —
+    v0.1 measured 4.50:1 on Sage Mist (zero AA margin for inline links) and 5.24 for button text;
+    v0.2 clears at 5.86 and 6.82. Straw demoted from "small accents" to ornament-only after measuring 2.41 on paper.</p>
+  </section>
+
+  <!-- B -->
+  <section class="dir">
+    <h2>B — Granite Terrace <span class="tag">Not chosen</span></h2>
+    <div class="cols">
+      <div>
+        <h3>Palette</h3>
+        <div class="swatches">
+          <div class="sw" style="background:#F4F5F2">Stone<br>#F4F5F2</div>
+          <div class="sw" style="background:#E4E7E1">Gravel<br>#E4E7E1</div>
+          <div class="sw" style="background:#252B26;color:#CBD3CC">Charcoal<br>#252B26</div>
+          <div class="sw" style="background:#3E6B4A;color:#fff">Fern<br>#3E6B4A</div>
+          <div class="sw" style="background:#9BAA9E">Lichen*<br>#9BAA9E</div>
+        </div>
+      </div>
+      <div>
+        <h3>Character</h3>
+        <ul>
+          <li>Cool, architectural, gallery-quiet. Grid-forward portfolio emphasis, hairline rules, generous negative space.</li>
+          <li>Fern accent measures 5.63 on Stone — clean AA.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Why not</h3>
+        <ul>
+          <li>Reads landscape-architecture-corporate; brief asks for warm and hand-touched.</li>
+          <li>Green-on-grey drifts toward the "irrigation company" look the client explicitly hates.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="dir">
+    <h2>C — Restio Dusk <span class="tag">Not chosen</span></h2>
+    <div class="cols">
+      <div>
+        <h3>Palette</h3>
+        <div class="swatches">
+          <div class="sw" style="background:#F7F4F2">Shell<br>#F7F4F2</div>
+          <div class="sw" style="background:#ECE4E6">Haze<br>#ECE4E6</div>
+          <div class="sw" style="background:#2E2230;color:#D5C9D8">Plum Ink<br>#2E2230</div>
+          <div class="sw" style="background:#6E4A6E;color:#fff">Dusk<br>#6E4A6E</div>
+          <div class="sw" style="background:#C2A36B">Reed*<br>#C2A36B</div>
+        </div>
+      </div>
+      <div>
+        <h3>Character</h3>
+        <ul>
+          <li>Moody, editorial, dusk-photography led; restio seed-head textures as ornament. Dusk accent measures 6.69 on Shell.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Why not</h3>
+        <ul>
+          <li>Beautiful but demands a dusk-toned photo library the client doesn't have and can't shoot for launch.</li>
+          <li>Mauve reads floral-boutique more than indigenous-landscape.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <p style="font-size:.78rem;color:#8a8f80">Pilot note: this sheet is the §8.2 exploration artifact. When Claude Design
+  is available it produces interactive mockups in its place; the contract (named directions → refinement → measured
+  distillation into tokens.json) is identical either way.</p>
+</main>
+</body>
+</html>
