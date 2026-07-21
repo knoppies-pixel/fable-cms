@@ -35,22 +35,34 @@ blocker.
 
 ---
 
-## Phase 5 — First real site pipeline (built generic, not client-shaped)
+## Phase 5 — First real site pipeline (built generic, not client-shaped) — ✅ COMPLETE (commits 40a4ae7, 2eef2c8, 362df81)
 
 Deliverable is the *pipeline itself*, reusable for any future client:
 
-- [ ] Run the design-direction step (§8.2) once, end-to-end, as a proof of process
+- [x] Run the design-direction step (§8.2) once, end-to-end, as a proof of process
       — pilot subject can be another disposable demo, doesn't need to be a real
-      client.
-- [ ] Build `create-site.ts`: registers site row + API key, clones template, writes
-      site env, outputs Vercel setup steps.
-- [ ] Write the `CLAUDE.md` brief-to-site conventions into the template repo (brief
-      → pages → registry sections → typed seeding helper).
-- [ ] Acceptance: one real-or-realistic pilot site built end-to-end from a brief,
-      through the actual pipeline, no manual shortcuts.
+      client. *(Fynbos & Fern pilot: three named directions, measured WCAG audit,
+      approved Protea Veld distilled to `kb/fynbos-fern/tokens.json`; generic
+      runbook + artifact contract pinned in `kb/README.md`.)*
+- [x] Build `create-site.ts`: registers site row + API key, clones template, writes
+      site env, outputs Vercel setup steps. *(Key shown once/hash stored, delivery
+      secrets, media bucket, memberships, per-clone port pair; refuses existing
+      slug/dir.)*
+- [x] Write the `CLAUDE.md` brief-to-site conventions into the template repo (brief
+      → pages → registry sections → typed seeding helper). *(`seed-lib.ts`:
+      compile-time `z.input` typing per section type + runtime schema validation,
+      idempotent media/page semantics.)*
+- [x] Acceptance: one real-or-realistic pilot site built end-to-end from a brief,
+      through the actual pipeline, no manual shortcuts. *(3 pages / 15 sections /
+      16 assets; suites 1–4 re-run green + new `pnpm test:phase5`, 67 checks;
+      Lighthouse a11y/SEO 100 everywhere, perf 96/95, home 93 = the known local
+      Lantern artifact — desktop control 100.)*
 
 **Exit criteria:** a second person (or future-you, cold) could run `create-site.ts`
 against a fresh brief and get a working site without you hand-holding every step.
+**Met** — the printed handoff plus template `CLAUDE.md` + `kb/README.md` carry the
+whole flow; details in DECISIONS.md §Phase 5. Carried forward with the 4.5 open
+item: re-verify home-page Lighthouse (demo *and* pilot) on a real Vercel preview.
 
 ---
 
