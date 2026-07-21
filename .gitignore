@@ -7,3 +7,11 @@ dist
 .vercel
 supabase/.temp
 supabase/.branches
+
+# design-sync (staged scripts, build output, machine state — .design-sync/ config/notes/previews ARE committed)
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
+packages/sections/.ds-css/

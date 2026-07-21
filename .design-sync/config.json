@@ -1,0 +1,34 @@
+{
+  "projectId": "e1856f07-b177-4be2-b880-32632a24c78f",
+  "shape": "package",
+  "pkg": "@fable/sections",
+  "globalName": "FableSections",
+  "entry": "packages/sections/design-sync.entry.ts",
+  "docsDir": "../../.design-sync/docs",
+  "libOverrides": {
+    "source-kit.mjs": "snake_case section dirs must match their PascalCase component in the own-dir group filter so doc frontmatter categories apply"
+  },
+  "buildCmd": "node .design-sync/build-css.mjs",
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {
+    "FeatureGrid": { "cardMode": "column", "viewport": "1280x900" },
+    "Gallery": { "cardMode": "column", "viewport": "1280x900" }
+  },
+  "tsconfig": "../../.design-sync/tsconfig.bundle.json",
+  "cssEntry": ".ds-css/sections.css",
+  "componentSrcMap": {
+    "Hero": "src/hero/Hero.tsx",
+    "RichTextSection": "src/rich_text/RichTextSection.tsx",
+    "FeatureGrid": "src/feature_grid/FeatureGrid.tsx",
+    "ImageTextSplit": "src/image_text_split/ImageTextSplit.tsx",
+    "Testimonials": "src/testimonials/Testimonials.tsx",
+    "CtaBanner": "src/cta_banner/CtaBanner.tsx",
+    "FaqAccordion": "src/faq_accordion/FaqAccordion.tsx",
+    "ContactForm": "src/contact_form/ContactForm.tsx",
+    "Gallery": "src/gallery/Gallery.tsx",
+    "LogoStrip": "src/logo_strip/LogoStrip.tsx",
+    "SectionShell": "src/lib/SectionShell.tsx",
+    "CmsImage": "src/lib/CmsImage.tsx",
+    "RichText": "src/lib/richtext.tsx"
+  }
+}
