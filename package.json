@@ -8,14 +8,17 @@
     "typecheck": "pnpm -r typecheck",
     "build": "pnpm -r build",
     "create-site": "pnpm --filter @fable/db exec tsx ../../scripts/create-site.ts",
+    "migrate-wp": "pnpm --filter @fable/db exec tsx ../../scripts/migrate-wp/cli.ts",
     "db:seed": "pnpm --filter @fable/db seed",
     "db:test": "pnpm --filter @fable/db test:phase1",
     "db:test:phase2": "pnpm --filter @fable/db test:phase2",
     "test:phase3": "pnpm --filter @fable/db exec tsx ../../scripts/phase3-acceptance.ts",
     "test:phase4": "pnpm --filter @fable/db exec tsx ../../scripts/phase4-acceptance.ts",
-    "test:phase5": "pnpm --filter @fable/db exec tsx ../../scripts/phase5-acceptance.ts"
+    "test:phase5": "pnpm --filter @fable/db exec tsx ../../scripts/phase5-acceptance.ts",
+    "test:phase6": "pnpm --filter @fable/db exec tsx ../../scripts/phase6-acceptance.ts"
   },
   "devDependencies": {
+    "node-html-parser": "^9.0.0",
     "playwright": "^1.61.1",
     "supabase": "^2.109.1"
   }

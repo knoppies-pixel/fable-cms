@@ -1,6 +1,12 @@
 node_modules
 .env*
 !.env.example
+
+# migration tool downloads (plans + extracts ARE committed as review artifacts)
+migrations/*/media/
+# phase 6 suite fixtures — regenerated every run
+migrations/wp-fixture/
+migrations/wp-fixture-wxr/
 .next
 dist
 *.tsbuildinfo
