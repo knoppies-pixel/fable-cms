@@ -3,11 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/build-tokens.mjs",
+    "predev": "node ../../scripts/free-port.mjs 3001 && node scripts/build-tokens.mjs",
     "dev": "next dev --port 3001",
     "tokens:build": "node scripts/build-tokens.mjs",
-    "prebuild": "node scripts/build-tokens.mjs",
+    "prebuild": "node ../../scripts/free-port.mjs 3001 3100 && node scripts/build-tokens.mjs",
     "build": "next build",
+    "prestart": "node ../../scripts/free-port.mjs 3001",
     "start": "next start --port 3001",
     "typecheck": "tsc --noEmit"
   },

@@ -3,8 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "predev": "node ../../scripts/free-port.mjs 3000",
     "dev": "next dev --port 3000",
+    "prebuild": "node ../../scripts/free-port.mjs 3000",
     "build": "next build",
+    "prestart": "node ../../scripts/free-port.mjs 3000",
     "start": "next start --port 3000",
     "typecheck": "tsc --noEmit"
   },
