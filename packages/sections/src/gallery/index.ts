@@ -1,11 +1,13 @@
 import { z } from "zod";
 import { imageRef } from "../lib/refs";
+import { edgeField } from "../lib/band";
 import type { SectionMeta } from "../contract";
 
 export const schema = z.object({
   heading: z.string().max(120).default(""),
   images: z.array(imageRef).min(1).max(24),
   columns: z.number().int().min(2).max(4).default(3),
+  edge: edgeField,
 });
 
 export type GalleryProps = z.infer<typeof schema>;

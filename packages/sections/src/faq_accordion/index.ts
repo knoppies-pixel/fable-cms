@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { edgeField } from "../lib/band";
 import type { SectionMeta } from "../contract";
 
 export const schema = z.object({
@@ -13,6 +14,7 @@ export const schema = z.object({
     )
     .min(1)
     .max(20),
+  edge: edgeField,
 });
 
 export type FaqAccordionProps = z.infer<typeof schema>;

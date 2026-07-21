@@ -1,2 +1,13 @@
 @import "tailwindcss";
 @import "@fable/config/tailwind/theme.css";
+
+/*
+ * The admin console has not been through the Refined Coastal direction
+ * (design/DIRECTION.md) — its rounded-btn usage predates the pill-radius
+ * decision and covers inputs, banners and thumbnails, not just buttons.
+ * Pin the pre-direction radii until the admin gets its own design pass.
+ */
+:root {
+  --radius-btn: 0.5rem;
+  --radius-card: 0.75rem;
+}

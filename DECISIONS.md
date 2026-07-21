@@ -157,3 +157,23 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
   (SSRF protection) even when allowlisted, so images had been silently 400ing in local
   prod builds — `dangerouslyAllowLocalIP` is now enabled only when the Supabase host is
   localhost, and the phase-2 suite fetches a real optimized image instead of grepping HTML.
+
+## Phase 4.5
+
+- **Design direction "Refined Coastal" approved by the studio (2026-07-21).** Durable record in
+  `design/DIRECTION.md`; interactive sheet at
+  https://claude.ai/code/artifact/cd3f7ca9-5e30-41ba-907a-ac07e8b8fb69 (v0.2, redlines addressed).
+  Approvals: palette + band rhythm + depth moves + motion casting as proposed; accent deepened
+  `#0F7E92 → #0D7789` after measured contrast showed 4.45:1 on paper (under body AA — inline links
+  set in accent); pill buttons (`--radius-btn: 999px`) with new `--radius-field: 0.5rem` as the
+  action/field contrast; type Pairing A (Fraunces 600 + Albert Sans, display italic as accent voice).
+- **New tokens are additive**: `surfaceInk`, `onInk`, `accentSoft`, `accentWarm`, `radius.field` —
+  existing keys keep names/semantics, so per-site `kb/{client}/tokens.json` files stay valid.
+  `accentWarm` is ornament-only by rule (fails text AA by design; see DIRECTION.md contrast audit).
+- **Fonts self-hosted via `next/font/local`** (latin woff2 subsets, ≈62KB total, swap): Tailwind
+  `--font-sans`/`--font-display` resolve from the `next/font` variables, so client themes can swap
+  families by replacing the font files + variables without touching section code.
+- **Admin console pins pre-direction radii** (`apps/admin/app/globals.css` overrides
+  `--radius-btn`/`--radius-card`). The pill-button decision is a site-facing call; admin uses
+  `rounded-btn` on inputs, banners and thumbnails throughout, so inheriting 999px broke its UI.
+  Revisit when the admin gets its own design pass (adopt `rounded-field` semantics then).

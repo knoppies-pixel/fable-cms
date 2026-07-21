@@ -1,21 +1,25 @@
 import { SectionShell } from "../lib/SectionShell";
+import { Reveal } from "../lib/animations/Reveal";
 import type { FaqAccordionProps } from ".";
 
 /**
  * Native <details>/<summary> accordion: works without JavaScript, stays a
  * server component, and is keyboard-accessible for free.
  */
-export function FaqAccordion({ heading, items }: FaqAccordionProps) {
+export function FaqAccordion({ heading, items, edge }: FaqAccordionProps) {
   return (
-    <SectionShell width="narrow">
+    <SectionShell background="alt" width="narrow" edge={edge}>
       {heading && (
-        <h2 className="mb-10 text-center text-3xl font-bold tracking-tight">
+        <h2 className="mb-10 text-center font-display text-3xl font-semibold tracking-tight sm:text-4xl">
           {heading}
         </h2>
       )}
-      <div className="divide-y divide-surface-alt rounded-card border border-surface-alt">
+      <Reveal preset="staggerReveal" targets="details" className="space-y-3">
         {items.map((item, i) => (
-          <details key={i} className="group px-6 py-4">
+          <details
+            key={i}
+            className="group rounded-card border border-primary/10 bg-surface px-6 py-4 shadow-sm"
+          >
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold marker:hidden [&::-webkit-details-marker]:hidden">
               {item.question}
               <span
@@ -30,7 +34,7 @@ export function FaqAccordion({ heading, items }: FaqAccordionProps) {
             </p>
           </details>
         ))}
-      </div>
+      </Reveal>
     </SectionShell>
   );
 }

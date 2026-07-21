@@ -1,12 +1,20 @@
 import { z } from "zod";
 import { link } from "../lib/refs";
+import { edgeField } from "../lib/band";
 import type { SectionMeta } from "../contract";
 
 export const schema = z.object({
   heading: z.string().min(1).max(120),
+  headingAccent: z
+    .string()
+    .max(60)
+    .default("")
+    .describe("Optional closing phrase set in the italic accent voice"),
   body: z.string().max(300).describe("textarea").default(""),
   cta: link.nullable().default(null),
-  variant: z.enum(["accent", "subtle"]).default("accent"),
+  variant: z.enum(["accent", "subtle", "ink"]).default("accent"),
+  ornament: z.boolean().default(false).describe("Foam-dot cluster in one corner"),
+  edge: edgeField,
 });
 
 export type CtaBannerProps = z.infer<typeof schema>;

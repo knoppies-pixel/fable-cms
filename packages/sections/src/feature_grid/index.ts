@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { edgeField } from "../lib/band";
 import type { SectionMeta } from "../contract";
 
 export const schema = z.object({
@@ -15,6 +16,9 @@ export const schema = z.object({
     .min(1)
     .max(12),
   columns: z.number().int().min(2).max(4).default(3),
+  background: z.enum(["alt", "surface", "ink"]).default("alt"),
+  ornament: z.boolean().default(false).describe("Foam-dot cluster in one corner"),
+  edge: edgeField,
 });
 
 export type FeatureGridProps = z.infer<typeof schema>;

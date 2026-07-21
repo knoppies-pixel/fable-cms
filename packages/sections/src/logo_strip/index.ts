@@ -1,11 +1,13 @@
 import { z } from "zod";
 import { imageRef } from "../lib/refs";
+import { edgeField } from "../lib/band";
 import type { SectionMeta } from "../contract";
 
 export const schema = z.object({
   heading: z.string().max(120).default(""),
   logos: z.array(imageRef).min(1).max(12),
   grayscale: z.boolean().default(true),
+  edge: edgeField,
 });
 
 export type LogoStripProps = z.infer<typeof schema>;

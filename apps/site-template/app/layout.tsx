@@ -1,8 +1,27 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import { draftMode } from "next/headers";
 import Link from "next/link";
 import { fetchSiteContent, siteUrl } from "@/lib/cms";
 import "./globals.css";
+
+const fraunces = localFont({
+  src: [
+    { path: "./fonts/fraunces-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/fraunces-600-italic.woff2", weight: "600", style: "italic" },
+  ],
+  variable: "--font-fraunces",
+  display: "swap",
+});
+
+const albertSans = localFont({
+  src: [
+    { path: "./fonts/albert-sans-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/albert-sans-600.woff2", weight: "600", style: "normal" },
+  ],
+  variable: "--font-albert-sans",
+  display: "swap",
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const { site } = await fetchSiteContent();
@@ -20,8 +39,8 @@ export default async function RootLayout({
   const nav = [...pages].sort((a, b) => a.sort_order - b.sort_order);
 
   return (
-    <html lang="en">
-      <body className="bg-surface text-primary antialiased">
+    <html lang="en" className={`${fraunces.variable} ${albertSans.variable}`}>
+      <body className="bg-surface font-sans text-primary antialiased">
         {drafts && (
           <div className="bg-amber-400 px-4 py-1.5 text-center text-sm font-semibold text-amber-950">
             Preview mode — drafts and validation errors are visible.{" "}

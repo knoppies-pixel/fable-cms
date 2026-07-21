@@ -138,8 +138,17 @@ async function buildAssets(): Promise<Asset[]> {
     ["logo-4.png", "Metro Fitness Clubs logo", "Metro Fitness", "#155e75"],
     ["logo-5.png", "Oak & Iron Brewhouse logo", "Oak & Iron", "#0d9488"],
   ];
+  const portraits: Array<[string, string, string, string]> = [
+    ["portrait-sarah.jpg", "Sarah M.", "#0d7789", "#0c272e"],
+    ["portrait-luca.jpg", "Luca B.", "#0f766e", "#134e4a"],
+    ["portrait-thandi.jpg", "Thandi N.", "#155e75", "#0c272e"],
+    ["portrait-margaret.jpg", "Margaret V.", "#0891b2", "#155e75"],
+  ];
   return Promise.all([
     jpegAsset("hero.jpg", "Plumber repairing a kitchen sink", 1600, 1000, teal[0], teal[1], "Demo Plumbing Co"),
+    ...portraits.map(([path, name, from, to]) =>
+      jpegAsset(path, `Portrait of ${name}`, 480, 480, from, to, name.split(" ")[0] ?? name),
+    ),
     jpegAsset("workshop.jpg", "Our fully stocked service van", 1200, 900, "#155e75", "#0f2e35", "Workshop on wheels"),
     jpegAsset("team.jpg", "The Demo Plumbing team at the workshop", 1200, 900, "#0f766e", "#0f2e35", "The team"),
     ...gallery.map(([path, alt, from, to]) =>
@@ -360,30 +369,16 @@ export async function seed() {
       page_id: demoHome,
       section_type: "hero",
       props: {
-        heading: "Plumbing done right, the first time",
+        heading: "Plumbing done right,",
+        headingAccent: "the first time.",
         subheading:
           "Licensed, insured and on time — 24/7 call-outs across the metro.",
         cta: { label: "Get a free quote", href: "/about" },
         image: img("hero.jpg"),
         variant: "split",
+        edge: "tide",
       },
       sort_order: 0,
-      status: "published",
-    },
-    {
-      page_id: demoHome,
-      section_type: "logo_strip",
-      props: {
-        heading: "Trusted by local businesses",
-        logos: [
-          img("logo-1.png"),
-          img("logo-2.png"),
-          img("logo-3.png"),
-          img("logo-4.png"),
-          img("logo-5.png"),
-        ],
-      },
-      sort_order: 1,
       status: "published",
     },
     {
@@ -402,8 +397,9 @@ export async function seed() {
           { title: "Solar geysers", description: "Cut your water-heating bill in half." },
         ],
         columns: 3,
+        ornament: true,
       },
-      sort_order: 2,
+      sort_order: 1,
       status: "published",
     },
     {
@@ -419,8 +415,9 @@ export async function seed() {
         ),
         image: img("workshop.jpg"),
         imagePosition: "right",
+        depth: "escape",
       },
-      sort_order: 3,
+      sort_order: 2,
       status: "published",
     },
     {
@@ -433,17 +430,38 @@ export async function seed() {
             quote: "They found a slab leak two other companies missed — and fixed it the same day.",
             author: "Sarah M.",
             role: "Homeowner, Parkhurst",
+            image: img("portrait-sarah.jpg"),
           },
           {
             quote: "Our restaurant can't afford downtime. Demo Plumbing has kept us running for six years.",
             author: "Luca B.",
             role: "Owner, Harbourview Café",
+            image: img("portrait-luca.jpg"),
           },
           {
             quote: "Punctual, tidy, and the invoice matched the quote to the cent.",
             author: "Thandi N.",
             role: "Property manager",
+            image: img("portrait-thandi.jpg"),
           },
+        ],
+        background: "ink",
+        edge: "foam",
+      },
+      sort_order: 3,
+      status: "published",
+    },
+    {
+      page_id: demoHome,
+      section_type: "logo_strip",
+      props: {
+        heading: "Trusted by local businesses",
+        logos: [
+          img("logo-1.png"),
+          img("logo-2.png"),
+          img("logo-3.png"),
+          img("logo-4.png"),
+          img("logo-5.png"),
         ],
       },
       sort_order: 4,
@@ -457,6 +475,7 @@ export async function seed() {
         body: "Our emergency line is answered by a plumber, not a call centre.",
         cta: { label: "Call us 24/7", href: "tel:+27115550123" },
         variant: "accent",
+        ornament: true,
       },
       sort_order: 5,
       status: "published",
@@ -535,6 +554,28 @@ export async function seed() {
       status: "published",
     },
     {
+      // Single-item testimonials render as the pull-quote variant — the
+      // depth-chord showcase (design/DIRECTION.md).
+      page_id: demoAbout,
+      section_type: "testimonials",
+      props: {
+        heading: "",
+        items: [
+          {
+            quote:
+              "Twenty-two years, three houses, one plumber. When you find people this reliable, you keep their number.",
+            author: "Margaret V.",
+            role: "Client since 2004",
+            image: img("portrait-margaret.jpg"),
+          },
+        ],
+        background: "ink",
+        edge: "foam",
+      },
+      sort_order: 3,
+      status: "published",
+    },
+    {
       page_id: demoAbout,
       section_type: "faq_accordion",
       props: {
@@ -559,7 +600,7 @@ export async function seed() {
           },
         ],
       },
-      sort_order: 3,
+      sort_order: 4,
       status: "published",
     },
     {
@@ -572,7 +613,7 @@ export async function seed() {
         submitLabel: "Send message",
         successMessage: "Thanks — we'll get back to you within one working day.",
       },
-      sort_order: 4,
+      sort_order: 5,
       status: "published",
     },
     {
@@ -584,7 +625,7 @@ export async function seed() {
         cta: { label: "011 555 0123", href: "tel:+27115550123" },
         variant: "subtle",
       },
-      sort_order: 5,
+      sort_order: 6,
       status: "published",
     },
     {
@@ -593,7 +634,7 @@ export async function seed() {
       page_id: demoAbout,
       section_type: "hero",
       props: { heading: "", variant: "diagonal" },
-      sort_order: 6,
+      sort_order: 7,
       status: "published",
     },
     {
@@ -602,7 +643,7 @@ export async function seed() {
       page_id: demoAbout,
       section_type: "legacy_widget",
       props: { html: "<marquee>Welcome to our homepage!</marquee>" },
-      sort_order: 7,
+      sort_order: 8,
       status: "published",
     },
 

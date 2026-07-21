@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { edgeField } from "../lib/band";
 import type { SectionMeta } from "../contract";
 
 export const schema = z.object({
@@ -11,6 +12,8 @@ export const schema = z.object({
     .min(1)
     .max(200)
     .default("Thanks — we'll get back to you shortly."),
+  background: z.enum(["surface", "ink"]).default("surface"),
+  edge: edgeField,
 });
 
 export type ContactFormProps = z.infer<typeof schema>;

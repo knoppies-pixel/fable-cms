@@ -1,21 +1,38 @@
 /*
  * Shared Tailwind v4 theme layer.
  * Semantic design tokens are defined as CSS variables here and consumed via
- * token classes (bg-surface, text-primary, ...). These are neutral defaults;
- * each site overrides the variables in :root via its generated
- * tokens.generated.css (built from theme/tokens.json by `pnpm tokens:build`).
+ * token classes (bg-surface, text-primary, bg-surface-ink, ...). Defaults are
+ * the Refined Coastal system (design/DIRECTION.md); each site overrides the
+ * variables in :root via its generated tokens.generated.css (built from
+ * theme/tokens.json by `pnpm tokens:build`).
  */
 @theme {
   /* Backgrounds */
-  --color-surface: #ffffff;
-  --color-surface-alt: #f4f6f8;
+  --color-surface: #faf7f2;
+  --color-surface-alt: #e9f1f1;
+  --color-surface-ink: #0c272e;
   /* Text */
-  --color-primary: #111827;
-  --color-muted: #4b5563;
+  --color-primary: #132f37;
+  --color-muted: #51686f;
+  --color-on-ink: #c2d2d6;
   /* Brand */
-  --color-accent: #2563eb;
+  --color-accent: #0d7789;
   --color-accent-contrast: #ffffff;
+  --color-accent-soft: #6fc3d6; /* accent duty on ink grounds only */
+  --color-accent-warm: #b77a2e; /* ornament only — never text, never buttons */
+  /* Base copies of the remappable text tokens. Ink bands re-scope the four
+   * originals (see SectionShell); a light "island" inside an ink band (e.g. a
+   * floating paper card) resets them from these, which only ever hold the
+   * :root values. build-tokens.mjs emits the same duplicates per site. */
+  --color-primary-base: #132f37;
+  --color-muted-base: #51686f;
+  --color-accent-base: #0d7789;
+  --color-accent-contrast-base: #ffffff;
   /* Shape */
-  --radius-card: 0.75rem;
-  --radius-btn: 0.5rem;
+  --radius-card: 0.875rem;
+  --radius-btn: 999px; /* pill — actions only */
+  --radius-field: 0.5rem; /* form fields never go pill */
+  /* Type — families resolve from next/font/local variables set on <html> */
+  --font-sans: var(--font-albert-sans), "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
 }

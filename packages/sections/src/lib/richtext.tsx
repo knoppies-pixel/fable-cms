@@ -82,9 +82,9 @@ function renderChildren(node: RichTextNode): ReactNode {
 }
 
 const headingClasses: Record<number, string> = {
-  1: "text-4xl font-bold tracking-tight sm:text-5xl",
-  2: "text-3xl font-bold tracking-tight",
-  3: "text-xl font-semibold",
+  1: "font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl",
+  2: "font-display text-3xl font-semibold tracking-tight",
+  3: "font-display text-xl font-semibold",
   4: "text-lg font-semibold",
 };
 
@@ -128,7 +128,7 @@ function renderNode(node: RichTextNode, key: number): ReactNode {
       return <li key={key}>{renderChildren(node)}</li>;
     case "blockquote":
       return (
-        <blockquote key={key} className="border-l-4 border-accent pl-4 italic text-muted">
+        <blockquote key={key} className="border-l-4 border-accent pl-5 font-display text-xl italic leading-snug sm:text-2xl">
           {renderChildren(node)}
         </blockquote>
       );
