@@ -16,7 +16,15 @@ export interface MediaRecord {
   height: number | null;
 }
 
-const mediaStore = cache((): Map<string, MediaRecord> => new Map());
+// React's cache() scopes the map per server render; the client build's
+// cache() is a passthrough (every call would return a fresh, empty Map), so
+// browser contexts (admin live preview, design tooling) fall back to a module
+// singleton — there, the page session is the render scope.
+const clientStore = new Map<string, MediaRecord>();
+const mediaStore =
+  typeof window === "undefined"
+    ? cache((): Map<string, MediaRecord> => new Map())
+    : () => clientStore;
 
 export function registerMedia(records: MediaRecord[]): void {
   const store = mediaStore();
