@@ -333,6 +333,9 @@ export async function seed() {
         slug: "/about",
         title: "About Us",
         seo: {
+          // seo.title overrides the derived tab/search title; the nav keeps
+          // the short "About Us" label (Phase 6 additive fix).
+          title: "About Acme Plumbing — 20 Years of Certified Metro Plumbers",
           description:
             "Two decades of honest plumbing work: meet the team, browse recent projects, get in touch.",
         },

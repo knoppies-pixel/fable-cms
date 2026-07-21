@@ -67,8 +67,9 @@ export type SectionSpec = {
 export interface PageSpec {
   /** '/', '/about', '/services/gutters' */
   slug: string;
+  /** Nav label — keep it short; use seo.title for keyword-length titles. */
   title: string;
-  seo: { description?: string; ogImage?: string; noindex?: boolean };
+  seo: { title?: string; description?: string; ogImage?: string; noindex?: boolean };
   /** default "published" */
   status?: "draft" | "published";
   sections: SectionSpec[];

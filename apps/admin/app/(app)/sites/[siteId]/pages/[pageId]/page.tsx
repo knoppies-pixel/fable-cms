@@ -4,6 +4,7 @@ import { registry } from "@fable/sections";
 import { requireUser } from "@/lib/supabase/server";
 import { getSiteDelivery, sitePreviewUrl } from "@/lib/site-delivery";
 import { AddSectionDrawer, type SectionGroup } from "@/components/add-section-drawer";
+import { PageSeoForm, type PageSeo } from "@/components/page-seo-form";
 import { PublishToggle } from "@/components/publish-toggle";
 import { SectionList, type SectionListItem } from "@/components/section-list";
 
@@ -40,7 +41,7 @@ export default async function PageDetailPage({
     supabase
       .from("pages")
       .select(
-        "id, slug, title, status, sections(id, section_type, sort_order, status, updated_at)",
+        "id, slug, title, seo, status, sections(id, section_type, sort_order, status, updated_at)",
       )
       .eq("id", pageId)
       .eq("site_id", siteId)
@@ -97,6 +98,13 @@ export default async function PageDetailPage({
           />
         </div>
       </div>
+
+      <PageSeoForm
+        siteId={siteId}
+        pageId={pageId}
+        navTitle={page.title}
+        seo={(page.seo ?? {}) as PageSeo}
+      />
 
       <SectionList siteId={siteId} pageId={pageId} sections={sections} />
     </div>

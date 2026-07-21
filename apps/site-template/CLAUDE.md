@@ -42,8 +42,9 @@ When asked to build or extend a site from a client brief:
 4. Only create a **new section type** if no existing section or variant fits after genuinely
    trying. New sections follow the registry contract below and must be generic enough to
    reuse on other sites (no client names in section code).
-5. Set per-page SEO (`title`, meta description using the keyword list, OG image) as part of
-   seeding — never as an afterthought.
+5. Set per-page SEO as part of seeding — never as an afterthought. `title` is the **short
+   nav label**; keyword-length titles go in `seo.title` (used verbatim as the tab/search
+   title, include the brand suffix yourself). Meta descriptions use the keyword list.
 6. Verify: `pnpm typecheck && pnpm build`, then `pnpm preview` and check every page renders
    with no error cards.
 

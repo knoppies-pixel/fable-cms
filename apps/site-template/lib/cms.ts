@@ -18,6 +18,8 @@ export interface CmsPage {
   slug: string;
   title: string;
   seo: {
+    /** Overrides the derived `<title>`; `title` (nav label) stays short. */
+    title?: string;
     description?: string;
     ogImage?: string;
     noindex?: boolean;

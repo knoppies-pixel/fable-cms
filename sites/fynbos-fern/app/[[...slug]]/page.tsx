@@ -20,13 +20,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { site, pages } = await fetchSiteContent({ drafts });
   const page = pages.find((p) => p.slug === segmentsToSlug(slug));
   if (!page) return {};
+  // seo.title is used verbatim (it may carry its own brand suffix — e.g.
+  // migrated SEO titles); the nav-label title only feeds the derived default.
+  const metaTitle = page.seo.title || `${page.title} — ${site.name}`;
   return {
-    title: `${page.title} — ${site.name}`,
+    title: metaTitle,
     description: page.seo.description ?? "",
     alternates: { canonical: page.slug },
     robots: page.seo.noindex ? { index: false, follow: false } : undefined,
     openGraph: {
-      title: `${page.title} — ${site.name}`,
+      title: metaTitle,
       description: page.seo.description ?? "",
       url: page.slug,
       siteName: site.name,

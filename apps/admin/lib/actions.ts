@@ -74,6 +74,64 @@ export async function createPage(
   redirect(`/sites/${siteId}/pages/${page.id}`);
 }
 
+/**
+ * Page SEO (the `pages.seo` jsonb — the one page column client editors may
+ * write). `seo.title` overrides the site's derived `<title>`; the page's
+ * `title` column stays the short nav label. Empty fields are removed from the
+ * jsonb (so the site falls back to its defaults); unknown keys are preserved.
+ */
+const seoInput = z.object({
+  title: z.string().trim().max(150),
+  description: z.string().trim().max(300),
+  noindex: z.boolean(),
+});
+
+export async function savePageSeo(
+  siteId: string,
+  pageId: string,
+  input: { title: string; description: string; noindex: boolean },
+): Promise<ActionResult> {
+  const { supabase } = await requireUser();
+
+  const parsed = seoInput.safeParse(input);
+  if (!parsed.success) {
+    return fail(parsed.error.issues[0]?.message ?? "Invalid SEO fields.");
+  }
+
+  const { data: page, error: pageError } = await supabase
+    .from("pages")
+    .select("seo")
+    .eq("id", pageId)
+    .eq("site_id", siteId)
+    .maybeSingle();
+  if (pageError || !page) return fail("Page not found.");
+
+  const seo: Record<string, unknown> = {
+    ...(typeof page.seo === "object" && page.seo !== null ? page.seo : {}),
+  };
+  for (const [key, value] of Object.entries({
+    title: parsed.data.title || undefined,
+    description: parsed.data.description || undefined,
+    noindex: parsed.data.noindex || undefined,
+  })) {
+    if (value === undefined) delete seo[key];
+    else seo[key] = value;
+  }
+
+  const { error } = await supabase
+    .from("pages")
+    .update({ seo: seo as never })
+    .eq("id", pageId)
+    .eq("site_id", siteId);
+  if (error) {
+    if (error.code === "42501") return fail("You don't have permission to edit this page's SEO.");
+    return fail("Could not save the SEO settings.");
+  }
+
+  revalidatePath(`/sites/${siteId}/pages/${pageId}`);
+  return { ok: true, warning: await revalidateSite(supabase, siteId) };
+}
+
 // --- Sections --------------------------------------------------------------
 
 export async function addSection(
