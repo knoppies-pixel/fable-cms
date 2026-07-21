@@ -177,3 +177,28 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
   `--radius-btn`/`--radius-card`). The pill-button decision is a site-facing call; admin uses
   `rounded-btn` on inputs, banners and thumbnails throughout, so inheriting 999px broke its UI.
   Revisit when the admin gets its own design pass (adopt `rounded-field` semantics then).
+- **Phase 4.5 acceptance gate: three suite expectations updated to match the approved seed**
+  (home section order in phase1-acceptance.ts; the hero heading marker split across `heading` +
+  `headingAccent` in phase1/2-acceptance.ts and scripts/phase4-acceptance.ts; the phase4 dnd-kit
+  reorder target moved from `logo_strip` to `feature_grid` to match the new band order). All were
+  test-expectation drift from the approved redesign, not product bugs — re-ran green after the edit
+  (phases 1–4: 22 + 23 + 27 + 16 checks passed; seed idempotency: two consecutive runs, identical
+  counts; additive-schema guarantee: all 10 pre-elevation payloads still parse with new fields
+  defaulting to pre-elevation rendering).
+- **`Reveal` skips the entrance for above-the-fold content already painted at mount** (the fix:
+  if unscrolled and the element's top is above the ScrollTrigger start line, return before hiding
+  it). Root cause: hiding an already-painted above-fold element re-times LCP to the end of its
+  tween (measured: home LCP 0.8s → 3.0s) — a real regression from today's motion casting, fixed
+  by making above-fold motion purely scroll-driven (matches the reference sites' behavior anyway).
+- **Residual home Lighthouse performance (94, LCP ~3.1s) accepted as a local-test-environment
+  artifact, not a code defect** — both specifically-checked hypotheses (hero `priority` wiring,
+  responsive srcset sizing) traced out clean: the hero request is the sole `priority: High` fetch,
+  finishes in 214ms real time, and correctly serves the 750w/4.4KB variant, not the 1600×1000
+  source. The gap traces to Lighthouse's Lantern model simulating mobile bandwidth/HTTP-1.1
+  contention across ~10 image requests that Chrome's adaptive native `loading="lazy"` fetches
+  eagerly on our fast loopback `next start` server; a desktop-preset control on the identical
+  build scored 100/LCP 0.7s, isolating the cause to the throttling/environment, not the markup.
+  About (LCP element is text, not an image) is unaffected and scores 99. Flag for the studio:
+  re-verify home LCP against a real Vercel preview (HTTP/2, genuine mobile RTT) before treating
+  94 as a true production number — this was a documented risk in design/DIRECTION.md's "Reference
+  provenance" territory, now made concrete.

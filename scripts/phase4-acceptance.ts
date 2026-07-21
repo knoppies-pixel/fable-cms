@@ -20,9 +20,11 @@ const API_KEY = "local-dev-demo-content-key";
 const REVALIDATE_SECRET = "local-revalidate-secret";
 const ADMIN = { email: "admin@studio.local", password: "local-dev-password" };
 
-const HERO_SEEDED = "Plumbing done right, the first time";
+// The seeded heading's contiguous part — headingAccent renders in its own <em>.
+const HERO_SEEDED = "Plumbing done right,";
 const HERO_EDITED = "Phase 4: hero edited and republished";
 const LOGO_STRIP = "Trusted by local businesses";
+const FEATURE_GRID = "What we do";
 const DRAFT_CTA = "Winter special";
 
 let passed = 0;
@@ -165,9 +167,9 @@ async function main() {
   await page.waitForTimeout(300);
   await page.keyboard.press("Space");
   await page
-    .locator('[data-testid="section-list"] > li:first-child p:text-is("Logo strip")')
+    .locator('[data-testid="section-list"] > li:first-child p:text-is("Feature grid")')
     .waitFor({ timeout: 5_000 });
-  ok(true, "section list reordered optimistically (hero moved below logo strip)");
+  ok(true, "section list reordered optimistically (hero moved below feature grid)");
 
   // Persistence: the content API must reflect the new sort_order.
   const deadline = Date.now() + 15_000;
@@ -176,12 +178,12 @@ async function main() {
     const home = api.pages.find((p) => p.slug === "/");
     if (!home) throw new Error("home page missing from API");
     const hero = home.sections.find((s) => s.section_type === "hero");
-    const logos = home.sections.find((s) => s.section_type === "logo_strip");
-    if (hero && logos && logos.sort_order === 0 && hero.sort_order === 1) break;
+    const grid = home.sections.find((s) => s.section_type === "feature_grid");
+    if (hero && grid && grid.sort_order === 0 && hero.sort_order === 1) break;
     if (Date.now() > deadline) throw new Error("sort_order not persisted");
     await new Promise((resolve) => setTimeout(resolve, 300));
   }
-  ok(true, "new sort_order persisted (content API: logo_strip=0, hero=1)");
+  ok(true, "new sort_order persisted (content API: feature_grid=0, hero=1)");
 
   // --- Publish the draft CTA section, then the 10-second clock -------------
   const draftCta = sectionRows(page)
@@ -198,7 +200,7 @@ async function main() {
     ({ html }) =>
       html.includes(HERO_EDITED) &&
       html.includes(DRAFT_CTA) &&
-      html.indexOf(LOGO_STRIP) < html.indexOf(HERO_EDITED),
+      html.indexOf(FEATURE_GRID) < html.indexOf(HERO_EDITED),
     10_000 - (Date.now() - publishedAt),
     "production home shows reorder + heading edit + published draft",
   );

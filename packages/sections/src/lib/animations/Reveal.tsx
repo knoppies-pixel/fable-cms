@@ -38,6 +38,17 @@ export function Reveal({
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    /* Above-the-fold content is already painted when this effect runs —
+     * hiding it re-times LCP to the end of the tween (measured: home LCP
+     * 0.8s → 3.0s). Skip the entrance entirely; motion is scroll-driven. The
+     * 0.82 mirrors the ScrollTrigger start ("top 82%") below. */
+    if (
+      window.scrollY < 1 &&
+      el.getBoundingClientRect().top < window.innerHeight * 0.82
+    ) {
+      return;
+    }
+
     gsap.registerPlugin(ScrollTrigger);
     const items =
       preset === "staggerReveal"

@@ -64,7 +64,7 @@ async function main() {
   for (;;) {
     const html = await (await fetch(`${SITE_BASE}/`)).text();
     if (
-      html.includes("Plumbing done right, the first time") &&
+      html.includes("Plumbing done right,") &&
       !html.includes("Winter special")
     ) {
       break;
@@ -115,7 +115,9 @@ async function main() {
   const prodHome = await (await fetch(`${SITE_BASE}/`)).text();
   check(
     "home renders the hero heading",
-    prodHome.includes("Plumbing done right, the first time"),
+    // Heading + headingAccent render as separate nodes (<em> between them).
+    prodHome.includes("Plumbing done right,") &&
+      prodHome.includes("the first time."),
   );
   check(
     "home renders images through the CMS media pipeline",

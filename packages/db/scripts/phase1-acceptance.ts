@@ -151,7 +151,7 @@ async function main() {
   // that an editor can write the props column.
   const newProps = {
     ...(demoHero.props as Record<string, unknown>),
-    heading: "Plumbing done right, the first time",
+    heading: "Plumbing done right,",
   };
   const { data: propsUpdate, error: propsError } = await editor
     .from("sections")
@@ -247,11 +247,12 @@ async function main() {
     "home has the 6 published section types in order",
     JSON.stringify(homeSections) ===
       JSON.stringify([
+        // Band-rhythm order per design/DIRECTION.md (phase 4.5 seed).
         "hero",
-        "logo_strip",
         "feature_grid",
         "image_text_split",
         "testimonials",
+        "logo_strip",
         "cta_banner",
       ]),
     homeSections,
