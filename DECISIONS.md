@@ -257,3 +257,62 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
   dup-slug refusal). `form_submissions` persistence + Resend email stay deferred (spec §11
   open decision — needs the studio's provider choice; the contact endpoint still validates
   and logs).
+
+## Phase 6
+
+- **`seo.title` is used verbatim, no automatic brand suffix.** The Phase 5 deferral closed
+  first (additive, no migration — `pages.seo` is jsonb): when `seo.title` is set, the site
+  renders it as-is for `<title>`/OG (migrated SEO titles carry their own brand suffix);
+  otherwise the derived `{nav title} — {site name}` remains. Admin gains the previously
+  missing page-SEO panel (`savePageSeo`): title/description/noindex, merge-preserving
+  unknown seo keys, empty fields *removed* from the jsonb so site fallbacks re-engage.
+  Client editors can use it — `pages.seo` was already their column per the Phase 1 guard.
+- **Migration tool is three artifacts, not one command** (`pnpm migrate-wp
+  extract|plan|import` → `migrations/{site}/extract.json`, `plan.json`, `media/`). The
+  plan file IS the product of the first two stages: import hard-refuses until a human sets
+  `approved: true` (and records `reviewNotes`), so the human-in-the-loop step is enforced
+  by the tool, not by convention. extract/plan artifacts are committed as the audit trail;
+  media downloads are gitignored.
+- **Crawling the rendered site is the primary mode; WXR is the fallback.** Elementor keeps
+  page content in `_elementor_data` postmeta (near-empty `content:encoded`), so exports
+  lose fidelity — the WXR path still parses classic wpautop content, Yoast title/metadesc
+  postmeta, and a useful subset of `_elementor_data` widgets (heading, text-editor, image,
+  button, icon/image-box, testimonial), but the crawl sees the final HTML and is preferred.
+  Crawl niceties that mattered in practice: lazy-load `data-src`, WP `-WxH` size-suffix
+  stripping with rendered-size download fallback, cookie/chrome class filtering, nav +
+  sitemap discovery with non-nav pages imported as drafts.
+- **Mapping heuristics are conservative and self-flagging:** hero from the opening
+  heading/paragraph/button/image; text runs → `rich_text` (Tiptap subset); 3+ consecutive
+  images → gallery; 1–2 images pair with the copy since the last heading →
+  `image_text_split`; heading+short-list → `feature_grid`; FAQ-shaped pages →
+  `faq_accordion`; blockquotes → `testimonials`; trailing heading+button → `cta_banner`;
+  contact-like pages get our native `contact_form` (WP form plugins can't migrate).
+  Everything uncertain is `confidence:"review"` + a warning; all proposed props are
+  dry-validated against the live registry schemas (dummy mediaId for `$media`
+  placeholders) so a structurally invalid plan is flagged before the human sees it.
+- **Import reuses the Phase 5 typed seeding helper unchanged** (dynamic import of the
+  site clone's `seed-lib.ts`, template fallback when no clone exists). Runtime schema
+  validation is the guarantee for reviewed-JSON props; the wholesale page replacement
+  semantics are inherited deliberately — re-importing over admin-edited content is the
+  operator's decision, and the CLI says so.
+- **Acceptance run (2026-07-21): mulkernlandscaping.com** (real Oahu landscaping business,
+  WordPress + Elementor) → `sites/mulkern-demo` local production preview, 8 pages /
+  55 sections / 45 media. The review step earned its keep — plan overrides recorded in
+  `migrations/mulkern-demo/plan.json` reviewNotes: **(1)** `/elementor-1932` was the real
+  Portfolio page behind a template-kit slug → renamed `/portfolio`; **(2)** `/landing` +
+  `/thank-you` were Elementor kit demo pages (Vermont copy, 802 phone number, lorem
+  ipsum, on a Hawaii business) → dropped entirely — a blind importer would have shipped
+  them; **(3)** home hero subheading had absorbed the "CONTACT US" button label → replaced
+  with the real tagline; **(4)** shouty `/contact` nav label recased; `/blog-news` set to
+  draft (blog is v1.5 scope). This demo migration is acceptance evidence only: the content
+  belongs to a real third-party business, so `mulkern-demo` must never be deployed
+  publicly — delete site row + clone before any real use of the slug.
+- **Phase 6 gate run 2026-07-21:** full regression green — phases 1–5 re-run (incl.
+  phase 3/4 UI suites against rebuilt production admin + site) plus new `pnpm test:phase6`
+  (39 checks, offline: fixture WP site served in-process → extract/plan assertions →
+  import refusal on unapproved plan → human-override round trip → DB/storage verification
+  → WXR fixture). Suite lesson encoded in-code: the fixture server and the CLI child share
+  one machine, so the suite must `spawn` async — `spawnSync` deadlocks the server's event
+  loop. Admin SEO panel verified via a separate Playwright smoke (edit → content API →
+  restore). Carried forward: the standing Vercel-preview Lighthouse re-check (4.5/5) —
+  unchanged by this phase, the mulkern preview is local like the pilot's.

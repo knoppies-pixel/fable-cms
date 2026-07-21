@@ -1,0 +1,20 @@
+/* AUTO-GENERATED from theme/tokens.json by scripts/build-tokens.mjs — do not edit. */
+:root {
+  --color-surface: #FAF7F2;
+  --color-surface-alt: #E9F1F1;
+  --color-surface-ink: #0C272E;
+  --color-primary: #132F37;
+  --color-primary-base: #132F37;
+  --color-muted: #51686F;
+  --color-muted-base: #51686F;
+  --color-on-ink: #C2D2D6;
+  --color-accent: #0D7789;
+  --color-accent-base: #0D7789;
+  --color-accent-contrast: #ffffff;
+  --color-accent-contrast-base: #ffffff;
+  --color-accent-soft: #6FC3D6;
+  --color-accent-warm: #B77A2E;
+  --radius-card: 0.875rem;
+  --radius-btn: 999px;
+  --radius-field: 0.5rem;
+}

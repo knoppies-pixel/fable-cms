@@ -1,0 +1,3257 @@
+{
+  "site": "mulkern-demo",
+  "source": "https://mulkernlandscaping.com/",
+  "generatedAt": "2026-07-21T17:53:55.233Z",
+  "approved": true,
+  "reviewNotes": "Studio review 2026-07-21: (1) DROPPED /landing and /thank-you — Elementor template-kit demo pages left in the WP install (Vermont-area copy, 802 phone number, lorem ipsum) on an Oahu business. The tool had correctly drafted them as non-nav, but they are not client content at all. (2) RENAMED /elementor-1932 -> /portfolio — the real Portfolio page behind a junk kit slug; rewrote its seo.description (was slider chrome text). (3) Home hero subheading was the duplicated CONTACT US button label; replaced with the actual tagline; recased the CTA. (4) /contact nav label CONTACT US -> Contact; /blog-news set to draft (blog is v1.5 scope, content preserved unpublished). (5) Removed one empty rich_text on /nursery; pruned 11 media files only used by the dropped kit pages. Services/nursery image_text_split proposals reviewed and kept as mapped.",
+  "warnings": [
+    "REVIEW REQUIRED: 26 section(s) are marked confidence:\"review\". Edit this file, write what you changed in reviewNotes, then set approved:true.",
+    "/contact: Added a contact_form section — the original WP form (fields, recipients) does not migrate.",
+    "/landing: not linked from the source site's nav — imported as a draft.",
+    "/landing: Dropped pre-heading paragraph \"Your gardening expert in Vermont Area\" — usually chrome; restore it into a section if it's a real tagline.",
+    "/landing: Dropped pre-heading paragraph \"You Can Reach Us At - 802-420-4943\" — usually chrome; restore it into a section if it's a real tagline.",
+    "/thank-you: not linked from the source site's nav — imported as a draft.",
+    "/thank-you: Dropped pre-heading paragraph \"Your gardening expert in Vermont Area\" — usually chrome; restore it into a section if it's a real tagline."
+  ],
+  "media": [
+    {
+      "file": "honolulu-nightlighting-tree.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_nightlighting_tree.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_nightlighting_tree.jpg",
+      "alt": "Honolulu_nightlighting_tree"
+    },
+    {
+      "file": "honolulu-lanscape-nightlighting.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_Lanscape_Nightlighting.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_Lanscape_Nightlighting.jpg",
+      "alt": "Honolulu_Lanscape_Nightlighting"
+    },
+    {
+      "file": "honolulu-landscape-designs.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_Landscape_designs.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_Landscape_designs.jpg",
+      "alt": "Honolulu_Landscape_designs"
+    },
+    {
+      "file": "honolulu-landscaping-design.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_Landscaping_Design.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_Landscaping_Design.jpg",
+      "alt": "Honolulu_Landscaping_Design"
+    },
+    {
+      "file": "honolulu-landscaping-design-2.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu-landscaping-design.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu-landscaping-design.jpg",
+      "alt": "honolulu landscape design"
+    },
+    {
+      "file": "honolulu-landscape-design.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_Landscape_Design.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_Landscape_Design.jpg",
+      "alt": "Honolulu_Landscape_Design"
+    },
+    {
+      "file": "about-us-mulkern-landscaping-kevin-susan.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/12/About-Us-Mulkern-Landscaping_Kevin_Susan.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/12/About-Us-Mulkern-Landscaping_Kevin_Susan.jpg",
+      "alt": ""
+    },
+    {
+      "file": "img-1842.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/05/IMG_1842.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/05/IMG_1842.jpg",
+      "alt": ""
+    },
+    {
+      "file": "honolulu-landscape-awards.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/05/Honolulu_Landscape_Awards.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/05/Honolulu_Landscape_Awards-1024x683.jpg",
+      "alt": ""
+    },
+    {
+      "file": "olaugust-18.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/01/OLAugust-18.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/01/OLAugust-18-683x1024.jpg",
+      "alt": ""
+    },
+    {
+      "file": "kevin.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/Kevin.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/Kevin.jpg",
+      "alt": "Kevin Mulkern"
+    },
+    {
+      "file": "susan.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/Susan.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/Susan.jpg",
+      "alt": "Susan Mulkern"
+    },
+    {
+      "file": "allen.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/Allen.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/Allen.jpg",
+      "alt": "Allen Griffin"
+    },
+    {
+      "file": "landscape-design-1.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/12/Landscape_Design-1.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/12/Landscape_Design-1.jpg",
+      "alt": ""
+    },
+    {
+      "file": "landscape-design-mulkern.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2020/08/Landscape-Design-Mulkern.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2020/08/Landscape-Design-Mulkern.jpg",
+      "alt": ""
+    },
+    {
+      "file": "mulkern-landcaping-yard-maintenance.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/05/Mulkern_Landcaping_Yard_Maintenance.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/05/Mulkern_Landcaping_Yard_Maintenance-1024x653.jpg",
+      "alt": "Mulkern_Landcaping_Yard_Maintenance"
+    },
+    {
+      "file": "dsc1327.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/05/DSC1327.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/05/DSC1327-1024x678.jpg",
+      "alt": ""
+    },
+    {
+      "file": "mulkern-landscaping-sprinkler.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/Mulkern_Landscaping_Sprinkler.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/Mulkern_Landscaping_Sprinkler.jpg",
+      "alt": ""
+    },
+    {
+      "file": "mulkern-water-feature.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2021/02/Mulkern-Water-Feature.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2021/02/Mulkern-Water-Feature.jpg",
+      "alt": ""
+    },
+    {
+      "file": "honolulu-night-lighting-landscape-5-e1597265501570.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/06/Honolulu-Night-Lighting-Landscape-5-e1597265501570.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/06/Honolulu-Night-Lighting-Landscape-5-e1597265501570.jpg",
+      "alt": ""
+    },
+    {
+      "file": "diy-e1598835628907-qgohir0kqev7g2kohn4hrhr3df6sswp4oefwae93sm.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/elementor/thumbs/DIY-e1598835628907-qgohir0kqev7g2kohn4hrhr3df6sswp4oefwae93sm.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/elementor/thumbs/DIY-e1598835628907-qgohir0kqev7g2kohn4hrhr3df6sswp4oefwae93sm.jpg",
+      "alt": "DIY"
+    },
+    {
+      "file": "img-2537-1-scaled-qgohiq2qjktx4gm1n4pv6zzms1bfl7lec9set4ahyu.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/elementor/thumbs/IMG_2537-1-scaled-qgohiq2qjktx4gm1n4pv6zzms1bfl7lec9set4ahyu.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/elementor/thumbs/IMG_2537-1-scaled-qgohiq2qjktx4gm1n4pv6zzms1bfl7lec9set4ahyu.jpg",
+      "alt": "IMG_2537 (1)"
+    },
+    {
+      "file": "honolulu-night-lighting-landscape-6.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/06/Honolulu-Night-Lighting-Landscape-6.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/06/Honolulu-Night-Lighting-Landscape-6.jpg",
+      "alt": "Honolulu Night Lighting Landscape 6"
+    },
+    {
+      "file": "honolulu-night-lighting-landscape-2.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/06/Honolulu-Night-Lighting-Landscape-2.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/06/Honolulu-Night-Lighting-Landscape-2.jpg",
+      "alt": "Honolulu Night Lighting Landscape 2"
+    },
+    {
+      "file": "diamond-head-landscape-restoration.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/05/diamond_head_landscape_restoration.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/05/diamond_head_landscape_restoration.jpg",
+      "alt": "diamond_head_landscape_restoration"
+    },
+    {
+      "file": "honolulu-landscape-house.png",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/05/Honolulu_landscape_house.png",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/05/Honolulu_landscape_house.png",
+      "alt": "Honolulu_landscape_house"
+    },
+    {
+      "file": "honolulu-landscape-garage.png",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/05/Honolulu_landscape_garage.png",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/05/Honolulu_landscape_garage.png",
+      "alt": "Honolulu_landscape_garage"
+    },
+    {
+      "file": "landscape-hill-honolulu.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Landscape_hill_honolulu.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Landscape_hill_honolulu-1024x724.jpg",
+      "alt": "Landscape_hill_honolulu"
+    },
+    {
+      "file": "honolulu-view-landscape-hill.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_View_Landscape_Hill.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/Honolulu_View_Landscape_Hill-1024x683.jpg",
+      "alt": "Honolulu_View_Landscape_Hill"
+    },
+    {
+      "file": "honolulu-landscape-rock-hill.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/honolulu-landscape-rock-hill.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/07/honolulu-landscape-rock-hill-1024x708.jpg",
+      "alt": "honolulu-landscape-rock-hill"
+    },
+    {
+      "file": "wilhemina-home-exterior.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/06/Wilhemina_Home_Exterior.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/06/Wilhemina_Home_Exterior.jpg",
+      "alt": "Wilhemina Home Exterior Landscape"
+    },
+    {
+      "file": "oahulandscapedesign014.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/OahuLandscapeDesign014.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/OahuLandscapeDesign014.jpg",
+      "alt": "Oahu Hillside Landscape Design"
+    },
+    {
+      "file": "oahulandscapedesign015.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/OahuLandscapeDesign015.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/11/OahuLandscapeDesign015.jpg",
+      "alt": "Small Honolulu Garden Project"
+    },
+    {
+      "file": "dirtclass.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/06/DirtClass.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/06/DirtClass.jpg",
+      "alt": "Bamboo Dirt"
+    },
+    {
+      "file": "img-1808.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/09/IMG_1808.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/09/IMG_1808-1024x1024.jpg",
+      "alt": ""
+    },
+    {
+      "file": "lotusclass.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/06/LotusClass.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/06/LotusClass.jpg",
+      "alt": "Pink Lotus Blooming: Repotting Class"
+    },
+    {
+      "file": "2016-mulkernlandscaping-14.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2021/09/2016-MulkernLandscaping-14.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2021/09/2016-MulkernLandscaping-14-300x200.jpg",
+      "alt": ""
+    },
+    {
+      "file": "garden-prune.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/03/Garden_prune.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/03/Garden_prune-300x199.jpg",
+      "alt": ""
+    },
+    {
+      "file": "designworkflow.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/05/DesignWorkflow.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/05/DesignWorkflow-300x183.jpg",
+      "alt": ""
+    },
+    {
+      "file": "mul-worms.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/09/MUL_Worms.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/09/MUL_Worms-300x199.jpg",
+      "alt": "Hawaii Landscaping Workshop - Bugs"
+    },
+    {
+      "file": "img-2824.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/03/IMG_2824.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2015/03/IMG_2824-300x225.jpg",
+      "alt": ""
+    },
+    {
+      "file": "sk78123.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/01/SK78123.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/01/SK78123-300x200.jpg",
+      "alt": "backyard landscape"
+    },
+    {
+      "file": "kenner-website-image-1a.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/12/Kenner_Website_Image_1a.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2013/12/Kenner_Website_Image_1a-300x300.jpg",
+      "alt": ""
+    },
+    {
+      "file": "for-kevin-64.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/05/for-kevin-64.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2016/05/for-kevin-64-300x225.jpg",
+      "alt": ""
+    },
+    {
+      "file": "sk78418.jpg",
+      "sourceUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/02/SK78418.jpg",
+      "fallbackUrl": "https://mulkernlandscaping.com/wp-content/uploads/2014/02/SK78418-300x199.jpg",
+      "alt": "frontyard garden oahu"
+    }
+  ],
+  "pages": [
+    {
+      "slug": "/",
+      "title": "Home",
+      "seo": {
+        "title": "Mulkern Landscaping",
+        "description": "Oahu's Leading Landscaping Contractor"
+      },
+      "status": "published",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "heading": "Award-Winning Landscaping Services",
+            "variant": "centered",
+            "subheading": "Oahu's leading landscaping contractor — designing the island's gardens since 1975.",
+            "cta": {
+              "label": "Contact us",
+              "href": "/contact"
+            }
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Designing Oahu's Gardens since 1975."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Landscape design, installation, repairs & more..."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "For over 40 years Mulkern Landscaping has designed and maintained landscapes from urban Honolulu, to East Oahu and Kailua. Specializing in bringing your dream landscape to life, Mulkern Landscaping’s team are the local experts in water feature installation, night lighting, and full-service landscaping projects. Find inspiration in a few of our Honolulu landscaping projects below."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "gallery",
+          "props": {
+            "images": [
+              {
+                "$media": "honolulu-nightlighting-tree.jpg",
+                "alt": "Honolulu_nightlighting_tree"
+              },
+              {
+                "$media": "honolulu-lanscape-nightlighting.jpg",
+                "alt": "Honolulu_Lanscape_Nightlighting"
+              },
+              {
+                "$media": "honolulu-landscape-designs.jpg",
+                "alt": "Honolulu_Landscape_designs"
+              },
+              {
+                "$media": "honolulu-landscaping-design.jpg",
+                "alt": "Honolulu_Landscaping_Design"
+              },
+              {
+                "$media": "honolulu-landscaping-design-2.jpg",
+                "alt": "honolulu landscape design"
+              },
+              {
+                "$media": "honolulu-landscape-design.jpg",
+                "alt": "Honolulu_Landscape_Design"
+              }
+            ]
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Landscape Consultations"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Plan with the island's top landscaping professionals"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "New Landscape Installations"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Professional installations for your dream landscape"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Landscape Renovations"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Reimagine your existing outdoor living spaces"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Custom Landscape Maintenance"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Keep your yard tidy with regular visits by professional crews"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Sprinkler Installation & Repair"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Keep your lawn and garden green and hydrated"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Natural Water Features"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add ponds, fountains and water features to your outdoor space"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "We cover Honolulu, East & Windward Oahu"
+                    }
+                  ]
+                },
+                {
+                  "type": "bulletList",
+                  "content": [
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Honolulu"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Hawaii Kai"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kailua"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Lanikai"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Niu Valley"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kahala"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kaimuki"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kaneohe"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Waimanalo"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kuliouou"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Nuuanu"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Manoa"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        }
+      ],
+      "sourceUrl": "https://mulkernlandscaping.com/"
+    },
+    {
+      "slug": "/about",
+      "title": "About",
+      "seo": {
+        "title": "About - Mulkern Landscaping",
+        "description": "About Us Over 40 Years in Business Expert Landscape Design, Installation & Maintenance Founded in 1975 In June 1975 Kevin Mulkern started his landscaping business with a tiny Datsun pickup truck, a mower and a few hand tools. He began with an 8 hour work week and a lot of…"
+      },
+      "status": "published",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "heading": "About Us",
+            "variant": "split",
+            "image": {
+              "$media": "about-us-mulkern-landscaping-kevin-susan.jpg",
+              "alt": ""
+            }
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Over 40 Years in Business"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Expert Landscape Design, Installation & Maintenance"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Founded in 1975"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "In June 1975 Kevin Mulkern started his landscaping business with a tiny Datsun pickup truck, a mower and a few hand tools. He began with an 8 hour work week and a lot of time for surfing. Kevin’s goal was to provide the best landscape maintenance service in the state. Soon after Kevin’s wife Susan joined him in the business and there was a lot less time for surfing. From designing small commercial projects to maintaining 3 acre estates, Kevin’s range of landscape skills and customer service is unparalleled. Over the years Mulkern Landscaping has worked for thousands of local customers and his hope is there will be thousands more."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "gallery",
+          "props": {
+            "images": [
+              {
+                "$media": "img-1842.jpg",
+                "alt": ""
+              },
+              {
+                "$media": "honolulu-landscape-awards.jpg",
+                "alt": ""
+              },
+              {
+                "$media": "olaugust-18.jpg",
+                "alt": ""
+              }
+            ]
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Award-winning landscapes"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "For years to come"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Mulkern Landscaping specializes in creating and maintaining outdoor living spaces and landscapes on Oahu. From simple garden landscapes to resort-style luxury outdoor living spaces, our team of expert landscaping professionals is dedicated to providing you with the most reliable, professional, and top-notch service. The Mulkerns’ nursery is located in Waimanalo and open to the public on Saturdays or by appointment. If you’d like to get to know our team before you purchase our services, attend a free monthly workshop at our nursery."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "In 2014 and 2015 Mulkern won Honolulu Magazine’s award for Best Landscaper. The company also received the Award of Honor in the 2014 Betty Crocker Landscape Awards from Scenic Hawaii. Mulkern Landscaping continues to have excellent reviews from our customers. The Better Business Bureau rated us A+ and Google and Yelp give us 5 Stars. Mahalo to all our loyal customers past and present for the kind words and nominations!"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our Team of Landscaping Experts"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Mulkern Landscaping specializes in creating and maintaining outdoor living spaces and landscapes on Oahu. From simple garden landscapes to resort-style luxury outdoor living spaces, our team of expert landscaping professionals is dedicated to providing you with the most reliable, professional, and top-notch service. The Mulkerns’ nursery is located in Waimanalo and open to the public on Saturdays or by appointment. If you’d like to get to know our team before you purchase our services, attend a free monthly workshop at our nursery."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Kevin Mulkern",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "president"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "kevin.jpg",
+              "alt": "Kevin Mulkern"
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Kevin formed Mulkern Landscaping in 1975 after studying marine science and horticulture at Leeward Community College (LCC). A graduate of Kalani and LCC, Kevin has spent his life advocating for a landscape industry based on principles of sustainability and quality craftsmanship. He actively volunteers as a Kuliouou/Kalani Iki Neighborhood Board member and for environmental issues."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Susan Mulkern",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Vice-president"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "susan.jpg",
+              "alt": "Susan Mulkern"
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "The head of administration, Susan has over 40 years experience in the landscape industry. A Punahou alumni and University of California, Los Angeles (UCLA) graduate. Susan usually handles initial consultations, accounting and business operations. Kevin consistently credits his wife Susan with Mulkern Landscaping’s success because of her extensive office and bookkeeping knowledge."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Allen Griffin",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Manager"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "allen.jpg",
+              "alt": "Allen Griffin"
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allen works in the office and out in the field assisting our staff and responding to customer concerns. He is a talented fixer, from sprinklers and ponds to landscape equipment. Allen is a University of Maryland alumni and long time west Oahu resident. He will attend the Landscape Industry Certified Technician (LICT) training for Irrigation this summer. Come say hi to Allen Saturdays at our Waimanalo Nursery."
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "What Defines us"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Team Of Professionals"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "We have Landscape Industry Certified Technicians on the job"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Reliable Service"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Trust us to get the job done"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Satisfaction Guarantee"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "We stand behind our services"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "45 Years In Business"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our company is here to stay"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Landscaping Experts"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Continuing education for everyone is a top priority"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Eco Friendly Co."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Environmentally conscious services are available"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our Partners"
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        }
+      ],
+      "sourceUrl": "https://mulkernlandscaping.com/about"
+    },
+    {
+      "slug": "/services",
+      "title": "Services",
+      "seo": {
+        "title": "Services - Mulkern Landscaping",
+        "description": "Our Services From simple garden landscapes to resort-style luxury outdoor living spaces, our team of expert landscaping professionals is dedicated to providing you with the most reliable, professional, and top-notch service. Landscape Designs & Consultations The landscape consultation service inclu…"
+      },
+      "status": "published",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "heading": "Our Services",
+            "variant": "split",
+            "subheading": "From simple garden landscapes to resort-style luxury outdoor living spaces, our team of expert landscaping professionals is dedicated to providing you with the most reliable, professional, and top-notch service.",
+            "image": {
+              "$media": "landscape-design-1.jpg",
+              "alt": ""
+            }
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Landscape Designs & Consultations",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "The landscape consultation service includes a 1 hour site meeting consisting of advice, ideas, on site analysis and written recommendations, estimates and contractor referrals for work outside our area of expertise. Please see our Services page for current rates. Additional time can be arranged for if needed. Please note the landscape consultation is not a design service but a preliminary step to a landscape master plan."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "landscape-design-mulkern.jpg",
+              "alt": ""
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "New Landscape Installations",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Whether your backyard needs a pick-me-up, or you’d like to install water features and night lighting, our team can help."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "mulkern-landcaping-yard-maintenance.jpg",
+              "alt": ""
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Landscape Renovations",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Restore your landscape with a renovation. A “spring cleaning” gets your garden in shape if regular maintenance hasn’t been effective."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "dsc1327.jpg",
+              "alt": ""
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Custom Landscape Maintenance",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our team of expert landscapers will help you create and manage maintenance goals to keep your landscape healthy and beautiful all year round."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "mulkern-landscaping-sprinkler.jpg",
+              "alt": ""
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Sprinkler Installation & Repair",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Don’t worry about under or over watering. Mulkern Landscaping has been installing and maintaining the best sprinkler systems on Oahu for over 40 years."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "mulkern-water-feature.jpg",
+              "alt": ""
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Natural Water Features",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Over 25 years of experience designing, installing, repairing and cleaning water features, ponds, waterfalls and fountains."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "honolulu-night-lighting-landscape-5-e1597265501570.jpg",
+              "alt": ""
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Landscape Lighting",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Low voltage landscape lighting installation and repair services are available."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "diy-e1598835628907-qgohir0kqev7g2kohn4hrhr3df6sswp4oefwae93sm.jpg",
+              "alt": "DIY"
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "DIY Gardener Assistance",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Whether your backyard needs a pick-me-up, or you’d like to install water features and night lighting, our team can help."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "img-2537-1-scaled-qgohiq2qjktx4gm1n4pv6zzms1bfl7lec9set4ahyu.jpg",
+              "alt": "IMG_2537 (1)"
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 4
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Plant Delivery"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Paid delivery available when plants purchased at Mulkern Nursery in Waimanalo."
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Upfront Pricing"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Repairs"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "$115/man hour Repair and installation available for sprinkler systems, ponds & water features, low voltage outdoor lighting systems. 2 Hour Minimum."
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Landscape Consultation"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "$165.00 per hour Includes 1 hour site meeting consisting of advice, ideas, on site analysis + 2 hour for written recommendations, prices, contractor referrals and our proposal. For Oahu from the Pali Highway to Hanauma Bay - 3 hour minimum; total $495.00 + tax Sea Life Park to Kailua Road - 4 hour minimum; total $660.00 + tax"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "General Labor & Plant Delivery"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "$77/man hour Island wide curbside delivery. Planting service available. 2 Hour Minimum."
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Inquire With Us"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Enter your info and we'll call you back to discuss your project a bit more..."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        }
+      ],
+      "sourceUrl": "https://mulkernlandscaping.com/services"
+    },
+    {
+      "slug": "/portfolio",
+      "title": "Portfolio",
+      "seo": {
+        "title": "Portfolio - Mulkern Landscaping",
+        "description": "Award-winning Oahu landscape projects: night lighting, restorations, native Hawaiian plantings and more."
+      },
+      "status": "published",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "heading": "Our Portfolio",
+            "variant": "split",
+            "image": {
+              "$media": "honolulu-night-lighting-landscape-6.jpg",
+              "alt": "Honolulu Night Lighting Landscape 6"
+            }
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Night Lighting",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Kuliou'ou, Oahu"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "We live in paradise, your backyard should be paradise, too. Designs usually take 50 hours depending on size and intricacy of project."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "honolulu-night-lighting-landscape-2.jpg",
+              "alt": "Honolulu Night Lighting Landscape 2"
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Landscape Revival"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "DIAMOND HEAD, OAHU"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "This Diamond Head Road resident requested a landscape restoration. Armed with old photos and hand drawings the couple asked Mulkern to get this landscape back to it’s 1950’s self with a few modern twists."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Services provided include landscape design, project management, installation, maintenance, irrigation, and low voltage landscape lighting."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "gallery",
+          "props": {
+            "images": [
+              {
+                "$media": "diamond-head-landscape-restoration.jpg",
+                "alt": "diamond_head_landscape_restoration"
+              },
+              {
+                "$media": "honolulu-landscape-house.png",
+                "alt": "Honolulu_landscape_house"
+              },
+              {
+                "$media": "honolulu-landscape-garage.png",
+                "alt": "Honolulu_landscape_garage"
+              }
+            ]
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Unique Landscapes"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "WILHEMINA RISE, OAHU"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "This residential project located in Oahu’s Wilhelmina Rise district at the edge of a cliff. Mulkern strategically developed this vertical hillside property into usable space for the homeowner with vibrant, low water plants over a decade. The highest standards of safety were adhered to at every level of the project."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Services to the homeowner included design, project management, installation, maintenance, boulder removal, hillside stabilization and more."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "gallery",
+          "props": {
+            "images": [
+              {
+                "$media": "landscape-hill-honolulu.jpg",
+                "alt": "Landscape_hill_honolulu"
+              },
+              {
+                "$media": "honolulu-view-landscape-hill.jpg",
+                "alt": "Honolulu_View_Landscape_Hill"
+              },
+              {
+                "$media": "honolulu-landscape-rock-hill.jpg",
+                "alt": "honolulu-landscape-rock-hill"
+              }
+            ]
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Native Hawaiian Plants"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "St. Louis Heights, OAHU"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "A residential project located in Oahu’s Saint Louis Heights district minutes from the University of Hawaii. The homeowner requested an updated landscape design that mixed Native Hawaiian and low maintenance plant choices. Maintenance service continues to this day."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Services to the homeowner included design, project management, installation, maintenance and landscape lighting."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "gallery",
+          "props": {
+            "images": [
+              {
+                "$media": "wilhemina-home-exterior.jpg",
+                "alt": "Wilhemina Home Exterior Landscape"
+              },
+              {
+                "$media": "oahulandscapedesign014.jpg",
+                "alt": "Oahu Hillside Landscape Design"
+              },
+              {
+                "$media": "oahulandscapedesign015.jpg",
+                "alt": "Small Honolulu Garden Project"
+              }
+            ]
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Going Back to Green",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "KAHALA, OAHU"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "This beautiful home minutes from the beach in Kahala once had a backyard concreted over by a previous owner. The new homeowner wanted more green so as part of the new landscape design and installation the Mulkern crew ripped out the concrete and installed a new lawn."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Services included landscape design, installation, maintenance, lighting and irrigation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "mulkern-landcaping-yard-maintenance.jpg",
+              "alt": "Mulkern_Landcaping_Yard_Maintenance"
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Inquire With Us"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Enter your info and we'll call you back to discuss your project a bit more..."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        }
+      ],
+      "sourceUrl": "https://mulkernlandscaping.com/elementor-1932"
+    },
+    {
+      "slug": "/nursery",
+      "title": "Nursery",
+      "seo": {
+        "title": "Nursery - Mulkern Landscaping",
+        "description": "Our Nursery Our Nursery Located in beautiful Waimanalo Open Saturdays 8:30 - 4:00. Our Waimanalo nursery has one of the largest selections of water lilies, bamboo and lotus on Oahu. We also have a wide variety of tropical plants that grow well across the island. Shop over 30 varieties of…"
+      },
+      "status": "published",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "heading": "Our Nursery",
+            "variant": "split",
+            "image": {
+              "$media": "dirtclass.jpg",
+              "alt": "Bamboo Dirt"
+            }
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Our Nursery",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Located in beautiful Waimanalo"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Open Saturdays 8:30 - 4:00."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our Waimanalo nursery has one of the largest selections of water lilies, bamboo and lotus on Oahu. We also have a wide variety of tropical plants that grow well across the island. Shop over 30 varieties of bamboo including specialty varieties, like black timor, wamin and rare sacred bali. Mulkern Landscaping & Nursery also hosts free workshops monthly on landscape topics, such as pruning, lotus care, bamboo, garden and water feature design, restoration, etc."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "img-1842.jpg",
+              "alt": ""
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Water Lilies",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Mulkern Nursery has the best selection of water lilies on Oahu. Water lilies are aquatic plants with fragrant, vibrant flowers. Generally, water lily leaves and flowers float on the surface of the water. Flowers last an average of 2 – 5 days and come in a range of colors. Water lilies are seasonal plants but in tropical climates can bloom all year long. Varieties vary greatly – some, like the Woods White Knight, even bloom at night!"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "img-1808.jpg",
+              "alt": ""
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Bamboo",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Mulkern Nursery specializes in rare bamboos and has imported many different varieties. Some of the types of bamboo we carry are: Giant Golden, Timor Black, Sacred Bali, Fishpole, Feather, Buddha Belly, Fern, Monastery, and much more."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Bamboo is a type of grass originally from East Asia. It is the fastest growing plant in the world and has been used to combat soil erosion in Hawaii. Bamboo has long been used for food and shelter in various parts of Asia and even has medicinal uses."
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "lotusclass.jpg",
+              "alt": "Pink Lotus Blooming: Repotting Class"
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 4
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Lotus"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Mulkern Nursery has ten different varieties of lotus that differ in color, shape and scent."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Lotus have tall leaves and flowers that can shoot up many inches above the water’s surface. Flowers range in size and color but are commonly pink, white, yellow and red. Some blossoms are very fragrant. Lotus is edible and is also used in medicine."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        }
+      ],
+      "sourceUrl": "https://mulkernlandscaping.com/nursery"
+    },
+    {
+      "slug": "/careers",
+      "title": "Careers",
+      "seo": {
+        "title": "Careers - Mulkern Landscaping",
+        "description": "Employment opportunities Are you looking for a dynamic career that combines creativity, nature, and technology? Mulkern Landscaping & Nursery is seeking passionate individuals to join our innovative team! We are always willing to train unskilled individuals without experience and value those with k…"
+      },
+      "status": "published",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "heading": "Employment opportunities",
+            "variant": "centered",
+            "subheading": "About Us"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Are you looking for a dynamic career that combines creativity, nature, and technology? Mulkern Landscaping & Nursery is seeking passionate individuals to join our innovative team! We are always willing to train unskilled individuals without experience and value those with knowledge, background and passion for the green industry."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "For over 40 years, we’ve been transforming landscapes across Honolulu and East Oahu, specializing in water features, night lighting, and full-service landscaping projects. Our diverse services and unique nursery, featuring bamboo and water plants, make us a leader in the industry."
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Available Positions"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "First and foremost, we are in the landscape construction and maintenance business."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Landscape Maintenance & Landscape Construction"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "-Passion for plants"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "-Desire to learn new techniques"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "-Willing to pull weeds, mow, plant, plow and make repairs to irrigation systems -Gardening experience"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "-Landscaping & irrigation experience"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Nursery & Farm Associate"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Hands-on role perfect for nature enthusiasts"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Learn about organic farming and ornamental plant cultivation"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Flexible schedules available, including Saturday shifts"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Gain valuable experience in sustainable agriculture"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Remote Design Specialist"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Flex your creative muscles from the comfort of your home"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Perfect for those with fine arts, graphics, or architectural skills"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– 80% remote work with occasional in-person brainstorming sessions"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Bring landscapes to life through innovative designs"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Digital Organization Guru"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Modernize our systems and streamline our operations"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Convert existing data into user-friendly, searchable formats"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Create customized mailing lists for targeted communications"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Ideal for tech-savvy individuals with strong organizational skills"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Perks and Benefits"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Work-Life Balance: Flexible schedules and remote work options"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Growth Opportunities: Learn diverse skills in landscaping, design, and agriculture – Eco-Friendly Environment: Work with organic farming practices and sustainable landscaping – Innovative Projects: Contribute to cutting-edge landscape designs and water features – Team Collaboration: Join a passionate team dedicated to transforming outdoor spaces"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Unique Opportunities"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– WWOOF-Inspired Program"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Live and work on our organic farm and ornamental plant nursery"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Ideal for those seeking an immersive agricultural experience"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "– Amenities provided: camping space, laundry facilities, hot showers"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Join us creating beautiful, sustainable landscapes across Hawaii. At Mulkern Landscaping & Nursery, your creativity and passion can flourish in a supportive, nature-centric environment. Apply now using the form below and become a part of our growing team!"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Send us a message or Send us your Resume."
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "We cover Honolulu, East & Windward Oahu"
+                    }
+                  ]
+                },
+                {
+                  "type": "bulletList",
+                  "content": [
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Honolulu"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Hawaii Kai"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kailua"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Lanikai"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Niu Valley"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kahala"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kaimuki"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kaneohe"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Waimanalo"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kuliouou"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Nuuanu"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Manoa"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our Nursery"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our nursery is open Saturdays from 8:30 – 4:00 and by appointment. 41-639 Kaulukanu St, Waimanalo *No mail accepted here*"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our Farm"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our farm at the corner of Waikupanaha & Kaulukanu Streets"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "is available by appointment only. Enjoy our collection of specimen bamboo. 41-831 Kaulukanu St, Waimanalo *No mail accepted here*"
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        }
+      ],
+      "sourceUrl": "https://mulkernlandscaping.com/careers"
+    },
+    {
+      "slug": "/blog-news",
+      "title": "Blog",
+      "seo": {
+        "title": "Blog & News - Mulkern Landscaping",
+        "description": "News, Advice & More Helping customers create their dream garden paradise Copyright 2020 © Mulkern Landscaping Facebook-f Instagram Inquire With Us Enter your info and we'll call you back to discuss your project a bit more... 808-396-6595 Copyright 2024 © Mulkern Landscaping Facebook-f Instagram"
+      },
+      "status": "draft",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "heading": "News, Advice & More",
+            "variant": "split",
+            "image": {
+              "$media": "2016-mulkernlandscaping-14.jpg",
+              "alt": ""
+            }
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Helping customers create their dream garden paradise"
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Board of Water Supply’s residential submeter program",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "The Board of Water Supply’s residential submeter program was created for landscape irrigation water that does not go through the sewer system. The program significantly reduces monthly water bills for"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "garden-prune.jpg",
+              "alt": ""
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Renovation or Installation – What Do I Need?",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Helping customers create their dream garden paradise​ Knowing some landscaper jargon can help you communicate with your prospective landscape contractor. Landscape Renovations are a “spring cleaning” that gets your garden"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "designworkflow.jpg",
+              "alt": ""
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "The Design Process – Explained",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Design services start with a one-on-one consultation at your residence with Kevin or Susan Mulkern. From there, we’ll put the ideas to paper and provide a proposal based on your"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "mul-worms.jpg",
+              "alt": "Hawaii Landscaping Workshop - Bugs"
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Fertilizer FAQs",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "What does N-P-K mean? What are the numbers on a bag of fertilizer? EX: 21-6-5 N – Nitrogen promotes rapid growth, dark green leaf color, improves quality and quantity of foliage,"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "img-2824.jpg",
+              "alt": ""
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Mulkern on the Radio!",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "The Mulkern has a standing invitation to Mike Buck’s Fix It Friday talk show. Kevin or Susan often discuss landscape challenges and basic garden knowledge. Homeowners call in and can ask"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "sk78123.jpg",
+              "alt": "backyard landscape"
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Lawn Care Basics",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "REGULAR LAWN CARE Mow weekly or bi-weekly, depending on the grass type and climate. It promotes dense turf, suppresses weeds and is great for children. Remove no more than 1/3 of the"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "kenner-website-image-1a.jpg",
+              "alt": ""
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Landscape Design FAQs",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "“Why do I need a design?” Is a common question from prospective customers. Susan Mulkern answered it best when she said: “It always helps to have a game plan. A"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "for-kevin-64.jpg",
+              "alt": ""
+            },
+            "imagePosition": "left"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "image_text_split",
+          "props": {
+            "heading": "Join our Team!",
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Why Work At Mulkern? Mulkern Landscaping has been serving homeowners and businesses since 1975. We maintain an employee friendly environment and look for involvement at all levels. Mulkern Landscaping’s reputation"
+                    }
+                  ]
+                }
+              ]
+            },
+            "image": {
+              "$media": "sk78418.jpg",
+              "alt": "frontyard garden oahu"
+            },
+            "imagePosition": "right"
+          },
+          "confidence": "review",
+          "note": "Single inline image paired with adjacent copy — check the pairing reads right."
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "What’s a Consultation?"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Don’t know where to start with your landscape? Any successful project begins with a plan. Landscaping is no different. If you are a little lost, scheduling a Landscape Consultation is"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Inquire With Us"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Enter your info and we'll call you back to discuss your project a bit more..."
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        }
+      ],
+      "sourceUrl": "https://mulkernlandscaping.com/blog-news"
+    },
+    {
+      "slug": "/contact",
+      "title": "Contact",
+      "seo": {
+        "title": "Contact - Mulkern Landscaping",
+        "description": "Get in touch with us Thank you for thinking of our company! We strive to respond to all inquiries within two business days. For immediate attention please call us at 808-396-6595 during normal business hours. GIVE US A CALL 808-396-6595 Send us a message We cover Honolulu, East & Windward…"
+      },
+      "status": "published",
+      "sections": [
+        {
+          "type": "hero",
+          "props": {
+            "heading": "Get in touch with us",
+            "variant": "centered",
+            "subheading": "Thank you for thinking of our company! We strive to respond to all inquiries within two business days. For immediate attention please call us at 808-396-6595 during normal business hours."
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "rich_text",
+          "props": {
+            "body": {
+              "type": "doc",
+              "content": [
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 3
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "GIVE US A CALL"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "808-396-6595"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Send us a message"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "We cover Honolulu, East & Windward Oahu"
+                    }
+                  ]
+                },
+                {
+                  "type": "bulletList",
+                  "content": [
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Honolulu"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Hawaii Kai"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kailua"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Lanikai"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Niu Valley"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kahala"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kaimuki"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kaneohe"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Waimanalo"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Kuliouou"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Nuuanu"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "listItem",
+                      "content": [
+                        {
+                          "type": "paragraph",
+                          "content": [
+                            {
+                              "type": "text",
+                              "text": "Manoa"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "attrs": {
+                    "level": 2
+                  },
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our Nursery"
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Our nursery is open Saturdays from 8:30 – 4:00 and by appointment. 41-639 Kaulukanu St, Waimanalo *No mail accepted here*"
+                    }
+                  ]
+                }
+              ]
+            },
+            "width": "normal"
+          },
+          "confidence": "high"
+        },
+        {
+          "type": "contact_form",
+          "props": {},
+          "confidence": "review",
+          "note": "Contact-like page: WP form plugins can't be migrated — this is our native form. Wire the notification address in site settings."
+        }
+      ],
+      "sourceUrl": "https://mulkernlandscaping.com/contact"
+    }
+  ]
+}

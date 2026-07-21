@@ -66,22 +66,42 @@ item: re-verify home-page Lighthouse (demo *and* pilot) on a real Vercel preview
 
 ---
 
-## Phase 6 — WordPress/Elementor migration tool
+## Phase 6 — WordPress/Elementor migration tool — ✅ COMPLETE (commits ed70f5e, b7b2501 + acceptance commit)
 
-- [ ] CLI: crawl an existing site or parse a WP export XML, extract pages,
-      headings, copy, images.
-- [ ] Propose a mapping into registry sections as a reviewable JSON plan.
-- [ ] Human-in-the-loop by design — plan is reviewed/edited before import runs.
-- [ ] On approval: download media into Storage, insert rows.
-- [ ] Acceptance: migrate one existing WordPress client site to a preview
-      deployment.
+- [x] *(pre-work)* Additive `seo.title` on pages per the Phase 5 DECISIONS flag:
+      nav label and SEO title decoupled (site metadata verbatim override, admin
+      page-SEO panel, seed-lib typing) — so migrated content doesn't inherit
+      awkward titles into the nav.
+- [x] CLI: crawl an existing site or parse a WP export XML, extract pages,
+      headings, copy, images. *(`pnpm migrate-wp extract` — nav+sitemap crawl
+      incl. Elementor rendered HTML, lazy-src/size-suffix/chrome handling; WXR
+      mode parses wpautop, Yoast postmeta and an `_elementor_data` subset.)*
+- [x] Propose a mapping into registry sections as a reviewable JSON plan.
+      *(`plan` — 9 section-type heuristics, low-confidence mappings marked
+      `review` with warnings, props dry-validated against live schemas.)*
+- [x] Human-in-the-loop by design — plan is reviewed/edited before import runs.
+      *(Enforced, not conventional: `import` refuses until `approved: true` +
+      `reviewNotes`; proven by the phase 6 suite and the real run.)*
+- [x] On approval: download media into Storage, insert rows. *(Full-size download
+      with rendered-size fallback; rows via the Phase 5 typed seeding helper —
+      runtime schema validation, wholesale page replacement.)*
+- [x] Acceptance: migrate one existing WordPress client site to a preview
+      deployment. *(mulkernlandscaping.com — real WP+Elementor business — →
+      `sites/mulkern-demo` production preview: 8 pages / 55 sections / 45 media,
+      every page rendering with migrated seo.titles; demo-only, never deploy.)*
 
 **Relevance check for BMS later:** their current site has "no content" — likely
 means this tool isn't needed for them (nothing worth extracting), but build it
 generically anyway since most of your other real clients are on WordPress today.
 
 **Exit criteria:** one real migration completed to a working preview, plan-review
-step proven to catch at least one thing worth a human override.
+step proven to catch at least one thing worth a human override. **Met** — the
+review caught a portfolio page hiding behind an `/elementor-1932` kit slug and
+two Elementor demo pages (Vermont copy + lorem ipsum on a Hawaii business) that
+a blind import would have shipped; overrides recorded in the committed
+`migrations/mulkern-demo/plan.json`. Gate: suites 1–5 re-run green + new
+`pnpm test:phase6` (39 checks); details in DECISIONS.md §Phase 6. Carried
+forward: the Vercel-preview Lighthouse re-check from 4.5/5.
 
 ---
 
