@@ -307,6 +307,26 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
   draft (blog is v1.5 scope). This demo migration is acceptance evidence only: the content
   belongs to a real third-party business, so `mulkern-demo` must never be deployed
   publicly — delete site row + clone before any real use of the slug.
+- **Seed no longer deletes/recreates the seed users — upsert by email, uuid stable.**
+  Post-phase-6 review found `sites/fynbos-fern` and `sites/mulkern-demo` with ZERO
+  `site_members` rows: every `seed()` run deleted + recreated `admin@studio.local`
+  (new uuid), cascade-wiping its memberships on all non-fixture sites — the admin's
+  site switcher shrank to just the demo site even though `create-site.ts` had attached
+  the membership correctly at creation. seed.ts now updates the existing user in place
+  (password + confirmation reset, uuid preserved); a phase 1 check re-seeds and asserts
+  uuid stability so the churn can't come back. Existing memberships were repaired by a
+  one-off upsert. Lesson recorded: fixture resets must never recreate identities that
+  non-fixture rows reference.
+- **Import downscales oversized originals at the edge cap 2560px** (longest edge,
+  `sharp`, same-format re-encode q82, EXIF orientation baked in via `.rotate()`).
+  WP media libraries carry camera-roll originals (mulkern: 16.5MB/4928px → 1.1MB/2560px)
+  and next/image absorbing those at first request is wasted optimizer latency + storage.
+  2560px covers the template's largest rendered size. sharp loads via `createRequire`,
+  NOT dynamic `import()` — ESM resolution can't see the pnpm hoist fallback that makes
+  sharp reachable from root scripts (probe-verified); missing sharp degrades to
+  keep-original with a warning. Cached files in `migrations/{site}/media/` skip both
+  download and downscale — delete the cache to re-apply. Suite asserts a 3200px fixture
+  lands at 2560px.
 - **Phase 6 gate run 2026-07-21:** full regression green — phases 1–5 re-run (incl.
   phase 3/4 UI suites against rebuilt production admin + site) plus new `pnpm test:phase6`
   (39 checks, offline: fixture WP site served in-process → extract/plan assertions →

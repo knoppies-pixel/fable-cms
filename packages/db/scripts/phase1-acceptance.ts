@@ -37,6 +37,25 @@ async function main() {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
+  // Seed users must keep their uuids across runs: churning them cascade-wipes
+  // site_members on NON-fixture sites (pilot/migrated), emptying the admin's
+  // site switcher. Regression guard for the Phase 6 fix in seed.ts.
+  const seedEmails = Object.values(SEED_USERS).map((u) => u.email);
+  const idsBefore = (await service.auth.admin.listUsers({ page: 1, perPage: 1000 }))
+    .data!.users.filter((u) => u.email && seedEmails.includes(u.email))
+    .map((u) => `${u.email}:${u.id}`)
+    .sort();
+  await seed();
+  const idsAfter = (await service.auth.admin.listUsers({ page: 1, perPage: 1000 }))
+    .data!.users.filter((u) => u.email && seedEmails.includes(u.email))
+    .map((u) => `${u.email}:${u.id}`)
+    .sort();
+  check(
+    "re-seeding preserves auth user ids (memberships on real sites survive)",
+    idsBefore.length === 2 && JSON.stringify(idsBefore) === JSON.stringify(idsAfter),
+    { idsBefore, idsAfter },
+  );
+
   // Fixture lookups (service role, bypasses RLS).
   const { data: sites } = await service
     .from("sites")

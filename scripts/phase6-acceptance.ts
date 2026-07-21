@@ -16,6 +16,7 @@ import { createServer, type Server } from "node:http";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
+import sharp from "sharp";
 import type { Database } from "../packages/db/src/types";
 import { SERVICE_ROLE_KEY, SUPABASE_URL } from "../packages/db/scripts/local-env";
 import type { ExtractedSite, MigrationPlan } from "./migrate-wp/types";
@@ -128,11 +129,15 @@ const FIXTURE_PAGES: Record<string, string> = {
   "/privacy-policy": chrome(
     `
     <h1>Privacy policy</h1>
-    <p>We only keep what the contact form sends us.</p>`,
+    <p>We only keep what the contact form sends us.</p>
+    <img src="/wp-content/uploads/big-banner.png" alt="Wide banner">`,
     "Privacy Policy | Acme Gardens",
     "How we handle your data.",
   ),
 };
+
+/** Oversized original (3200px wide) — import must downscale it to 2560px. */
+let WIDE_PNG: Buffer;
 
 const FIXTURE_IMAGES = new Set([
   "/wp-content/uploads/hero.png", // full-size exists → suffix-strip succeeds
@@ -143,6 +148,7 @@ const FIXTURE_IMAGES = new Set([
   "/wp-content/uploads/garden1.png",
   "/wp-content/uploads/garden2-300x200.png", // full-size 404s → fallback path
   "/wp-content/uploads/garden3.png",
+  "/wp-content/uploads/big-banner.png", // 3200px wide — exercises the downscale
 ]);
 
 const SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>
@@ -157,7 +163,9 @@ function startFixtureServer(): Promise<Server> {
     if (page) {
       res.writeHead(200, { "content-type": "text/html" }).end(page);
     } else if (FIXTURE_IMAGES.has(path)) {
-      res.writeHead(200, { "content-type": "image/png" }).end(PNG_1PX);
+      res
+        .writeHead(200, { "content-type": "image/png" })
+        .end(path.endsWith("big-banner.png") ? WIDE_PNG : PNG_1PX);
     } else if (path === "/sitemap.xml") {
       res.writeHead(200, { "content-type": "application/xml" }).end(SITEMAP);
     } else {
@@ -247,6 +255,12 @@ async function main(): Promise<void> {
   for (const dir of [join(ROOT, "migrations", SITE), join(ROOT, "migrations", WXR_SITE)]) {
     rmSync(dir, { recursive: true, force: true });
   }
+
+  WIDE_PNG = await sharp({
+    create: { width: 3200, height: 400, channels: 3, background: { r: 40, g: 110, b: 80 } },
+  })
+    .png()
+    .toBuffer();
 
   const server = await startFixtureServer();
   try {
@@ -468,8 +482,17 @@ async function main(): Promise<void> {
     );
     check(
       "import: media rows carry probed dimensions",
-      (mediaRows ?? []).length >= 5 && (mediaRows ?? []).every((m) => m.width === 1 && m.height === 1),
+      (mediaRows ?? []).length >= 5 &&
+        (mediaRows ?? [])
+          .filter((m) => m.path !== "big-banner.png")
+          .every((m) => m.width === 1 && m.height === 1),
       mediaRows,
+    );
+    const bigBanner = mediaRows?.find((m) => m.path === "big-banner.png");
+    check(
+      "import: oversized original downscaled to the 2560px cap",
+      bigBanner?.width === 2560 && bigBanner?.height === 320,
+      bigBanner,
     );
     const { data: objects } = await service.storage.from(bucket).list();
     check(

@@ -6,6 +6,7 @@
  * whole plan validates — the same guarantee brief-driven seeding has.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { MigrationPlan, PlanMediaItem } from "./types";
@@ -26,6 +27,70 @@ interface SeedLib {
       sections: Array<{ type: never; props: never; status?: "draft" | "published" }>;
     }>;
   }): Promise<void>;
+}
+
+// --- oversized-original downscale -------------------------------------------
+// WP media libraries are full of camera-roll originals (5–10MB, 4000px+).
+// next/image resizes at request time, but making the optimizer chew a 10MB
+// source on first hit is wasted latency and storage — cap the longest edge
+// at import. 2560px comfortably covers the template's largest rendered size.
+
+const MAX_EDGE_PX = 2560;
+const REENCODE_QUALITY = 82;
+
+type Sharp = typeof import("sharp").default;
+let sharpModule: Sharp | null | undefined;
+function loadSharp(): Sharp | null {
+  if (sharpModule === undefined) {
+    try {
+      // createRequire, not import(): dynamic ESM import bypasses the CJS
+      // resolution (pnpm hoist fallback) that makes sharp reachable here.
+      sharpModule = createRequire(__filename)("sharp") as Sharp;
+    } catch {
+      console.warn("  media: sharp unavailable — oversized originals are kept as-is");
+      sharpModule = null;
+    }
+  }
+  return sharpModule;
+}
+
+async function downscaleIfOversized(
+  buffer: Buffer,
+  file: string,
+): Promise<Buffer> {
+  const sharp = loadSharp();
+  if (!sharp) return buffer;
+  try {
+    // .rotate() bakes EXIF orientation in before it's lost by re-encoding.
+    const image = sharp(buffer, { failOn: "none" }).rotate();
+    const meta = await image.metadata();
+    const edge = Math.max(meta.width ?? 0, meta.height ?? 0);
+    if (edge <= MAX_EDGE_PX) return buffer;
+    if (!meta.format || !["jpeg", "png", "webp"].includes(meta.format)) {
+      console.warn(`  media: ${file} is ${edge}px ${meta.format ?? "?"} — format not downscaled, kept as-is`);
+      return buffer;
+    }
+    const resized = image.resize({
+      width: MAX_EDGE_PX,
+      height: MAX_EDGE_PX,
+      fit: "inside",
+      withoutEnlargement: true,
+    });
+    const out =
+      meta.format === "jpeg"
+        ? await resized.jpeg({ quality: REENCODE_QUALITY, mozjpeg: true }).toBuffer()
+        : meta.format === "png"
+          ? await resized.png().toBuffer()
+          : await resized.webp({ quality: REENCODE_QUALITY }).toBuffer();
+    if (out.length >= buffer.length) return buffer;
+    console.log(
+      `  media: ${file} downscaled ${edge}px → ${MAX_EDGE_PX}px (${Math.round(buffer.length / 1024)} KB → ${Math.round(out.length / 1024)} KB)`,
+    );
+    return out;
+  } catch (error) {
+    console.warn(`  media: could not inspect ${file} (${String(error)}) — kept as-is`);
+    return buffer;
+  }
 }
 
 // --- extra dimension probes (seed-lib covers JPEG/PNG) ----------------------
@@ -101,6 +166,7 @@ async function downloadMedia(
         `could not download ${item.file} from ${item.sourceUrl} — fix or remove this media entry (and its $media refs) in the plan`,
       );
     }
+    buffer = await downscaleIfOversized(buffer, item.file);
     writeFileSync(target, buffer);
     console.log(`  media: downloaded ${item.file} (${Math.round(buffer.length / 1024)} KB)`);
     await new Promise((r) => setTimeout(r, 200));

@@ -196,28 +196,36 @@ export async function seed() {
     .in("slug", SEED_SITE_SLUGS);
   if (wipeError) throw new Error(`wiping sites: ${wipeError.message}`);
 
-  const seedEmails = Object.values(SEED_USERS).map((u) => u.email);
+  // Seed users are UPSERTED BY EMAIL, never deleted: user uuids must stay
+  // stable across seed runs. Deleting + recreating (the original approach)
+  // cascade-wiped the admin's site_members rows on every NON-fixture site
+  // (fynbos-fern, migrated sites, …) — the switcher then showed only the
+  // demo site. Password + confirmation are reset in place instead.
   const { data: userList, error: listError } = await db.auth.admin.listUsers({
     page: 1,
     perPage: 1000,
   });
   if (listError) throw new Error(`listing users: ${listError.message}`);
-  for (const user of userList.users) {
-    if (user.email && seedEmails.includes(user.email)) {
-      const { error } = await db.auth.admin.deleteUser(user.id);
-      if (error) throw new Error(`deleting user ${user.email}: ${error.message}`);
-    }
-  }
 
   const userIds: Record<string, string> = {};
   for (const [key, { email, password }] of Object.entries(SEED_USERS)) {
-    const { data, error } = await db.auth.admin.createUser({
-      email,
-      password,
-      email_confirm: true,
-    });
-    if (error) throw new Error(`creating user ${email}: ${error.message}`);
-    userIds[key] = data.user.id;
+    const existing = userList.users.find((user) => user.email === email);
+    if (existing) {
+      const { error } = await db.auth.admin.updateUserById(existing.id, {
+        password,
+        email_confirm: true,
+      });
+      if (error) throw new Error(`resetting user ${email}: ${error.message}`);
+      userIds[key] = existing.id;
+    } else {
+      const { data, error } = await db.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+      });
+      if (error) throw new Error(`creating user ${email}: ${error.message}`);
+      userIds[key] = data.user.id;
+    }
   }
 
   const { data: demoSite, error: demoSiteError } = await db
@@ -667,7 +675,9 @@ export async function seed() {
   );
   console.log(`  media      ${assets.length} placeholder assets in bucket ${bucket}`);
   console.log(`  other-site ${otherSite.id} (RLS isolation fixture)`);
-  console.log(`  users: ${seedEmails.join(", ")} (password: local-dev-password)`);
+  console.log(
+    `  users: ${Object.values(SEED_USERS).map((u) => u.email).join(", ")} (password: local-dev-password)`,
+  );
   console.log(`  demo-site content API key: ${DEMO_SITE_API_KEY}`);
 }
 
