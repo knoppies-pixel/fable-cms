@@ -10,6 +10,9 @@
     "build": "next build",
     "prestart": "node ../../scripts/free-port.mjs 3001",
     "start": "next start --port 3001",
+    "seed": "tsx scripts/seed-content.ts",
+    "preview": "pnpm build && pnpm start",
+    "lighthouse": "npx --yes lighthouse http://localhost:3001 --chrome-flags=--headless=new --only-categories=performance,accessibility,seo --output=json --output-path=lighthouse.json --quiet",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -29,6 +32,7 @@
     "@types/react-dom": "^19.2.0",
     "postcss": "^8.5.0",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.1",
     "typescript": "~5.9.3"
   }
 }

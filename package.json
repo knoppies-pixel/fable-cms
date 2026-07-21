@@ -7,11 +7,13 @@
     "dev:site": "pnpm --filter site-template dev",
     "typecheck": "pnpm -r typecheck",
     "build": "pnpm -r build",
+    "create-site": "pnpm --filter @fable/db exec tsx ../../scripts/create-site.ts",
     "db:seed": "pnpm --filter @fable/db seed",
     "db:test": "pnpm --filter @fable/db test:phase1",
     "db:test:phase2": "pnpm --filter @fable/db test:phase2",
     "test:phase3": "pnpm --filter @fable/db exec tsx ../../scripts/phase3-acceptance.ts",
-    "test:phase4": "pnpm --filter @fable/db exec tsx ../../scripts/phase4-acceptance.ts"
+    "test:phase4": "pnpm --filter @fable/db exec tsx ../../scripts/phase4-acceptance.ts",
+    "test:phase5": "pnpm --filter @fable/db exec tsx ../../scripts/phase5-acceptance.ts"
   },
   "devDependencies": {
     "playwright": "^1.61.1",

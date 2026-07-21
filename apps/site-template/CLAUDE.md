@@ -17,15 +17,28 @@ fetched from the studio CMS content API and deploys to a **client-owned Vercel p
 
 ## Building a site from a brief
 
+Prerequisites (done before this repo existed, by `create-site.ts` at the monorepo root):
+the site row + content API key are registered, `.env.local` is written, and
+`theme/tokens.json` carries the client's approved tokens. The design-direction step
+(`kb/README.md`) must have produced `kb/{client}/tokens.json` and `design/DIRECTION.md` —
+if they're missing, stop and run that step first; never invent a direction while building.
+
 When asked to build or extend a site from a client brief:
 
-1. Read the client knowledge repo (`kb/{client}`): `brief.md`, `tokens.json`, brand assets,
-   keyword list. Treat `brief.md` as the spec — sitemap, sections per page, CTAs, keywords.
-2. Apply `tokens.json` to `theme/tokens.json` in this repo (colors, type scale, radius).
-   Run `pnpm tokens:build` to regenerate the Tailwind theme. Never hardcode brand colors
+1. Read the client knowledge repo (`kb/{client}`): `brief.md`, `tokens.json`,
+   `design/DIRECTION.md`, brand assets, keyword list. Treat `brief.md` as the spec —
+   sitemap, sections per page, CTAs, keywords. DIRECTION.md's rules (band rhythm, edge
+   pairing, ornament limits) govern which variants/props you pick.
+2. If tokens changed since the clone, re-copy `kb/{client}/tokens.json` →
+   `theme/tokens.json` and run `pnpm tokens:build`. Never hardcode brand colors
    in components.
-3. Compose each page from **existing registry sections only**. Map brief content into
-   section props via `scripts/seed-content.ts` (typed helpers, validates against Zod schemas).
+3. Compose each page from **existing registry sections only**. Express the entire brief
+   as the `SiteSeedSpec` in `scripts/seed-content.ts`: pages → sections → props, assets
+   from `kb/{client}/assets` referenced via `img(file, alt)`, rich text via the `rt`
+   builders. Props are compile-time typed per section type and validated against the
+   registry's Zod schemas before any row is written. Then `pnpm seed` (idempotent —
+   pages are replaced wholesale, media upserts; stop re-seeding once the client owns
+   content in the admin).
 4. Only create a **new section type** if no existing section or variant fits after genuinely
    trying. New sections follow the registry contract below and must be generic enough to
    reuse on other sites (no client names in section code).
@@ -83,14 +96,19 @@ Non-negotiable on every page before a change is "done":
 - `pnpm dev` — run locally against the CMS content API (uses `SITE_API_KEY` in `.env.local`)
 - `pnpm typecheck && pnpm build` — must pass before any task is considered complete
 - `pnpm tokens:build` — regenerate Tailwind theme from `theme/tokens.json`
-- `pnpm seed` — run `scripts/seed-content.ts` against the CMS (idempotent; safe to re-run)
+- `pnpm seed` — run `scripts/seed-content.ts` against the CMS (idempotent; safe to re-run;
+  needs `SUPABASE_SERVICE_ROLE_KEY` in the env outside local dev)
 - `pnpm preview` — production build + local serve
-- `pnpm lighthouse` — Lighthouse CI against the preview build
+- `pnpm lighthouse` — Lighthouse against the running preview (writes `lighthouse.json`;
+  quality bar above reads its scores)
 
 ## Hard rules
 
 - Never commit secrets; keep `.env.example` current when adding env vars.
-- Never bypass the content API to hit Supabase directly from this repo.
+- Never bypass the content API to hit Supabase directly from this repo's **runtime**
+  (renderer, routes, components). The one sanctioned exception is the seeding tool
+  (`scripts/seed-content.ts` / `seed-lib.ts`) — a studio-side authoring script that
+  writes rows through the service role and never ships with the site.
 - Never edit generated files (`registry.ts`, theme output) by hand.
 - Deploys: pushing `main` deploys production on the client's Vercel project. Feature work
   happens on branches → preview deployments. Do not push directly to `main` unless the

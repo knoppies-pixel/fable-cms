@@ -1,7 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "./types";
+import type { Database, Json } from "./types";
 
-export type { Database };
+export type { Database, Json };
 
 export interface SupabaseEnv {
   url: string;
