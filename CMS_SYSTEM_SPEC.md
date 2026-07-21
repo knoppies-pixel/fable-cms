@@ -310,6 +310,33 @@ run the checks) before moving on. Commit at every green checkpoint.
 - **Accept:** full flow — reorder sections, edit hero heading, hit publish, deployed demo site
   shows the change within 10 seconds without a redeploy.
 
+### Phase 4.5 — Design elevation
+
+_Prerequisite: an approved `design/` folder exists in the repo, produced by the studio using
+Claude Design per §8: reference screenshots and notes for (a) revised default tokens,
+(b) redesigns of existing sections, (c) new showpiece sections (target 5–10: e.g.
+scroll-driven hero, horizontal-scroll gallery, stats counter, marquee, split-screen story).
+Claude Code implements only what the `design/` folder approves — no self-directed visual
+invention. Each showpiece folder contains reference screenshot(s) plus a note covering:
+what it is, which props the client may edit, and which `lib/animations/` preset it implies._
+
+- Apply the revised default tokens; regenerate the theme.
+- Rebuild/refine existing sections to match their approved references (spacing, type,
+  motion), preserving each section's schema (additive changes only, per §5 rule 3).
+- Implement approved showpiece sections per the §5 contract. Animations exclusively via
+  `lib/animations/` presets: `prefers-reduced-motion` respected (content visible without
+  motion), triggers cleaned up on unmount, `dvh` units for any viewport-height pinning.
+  Every new section must render acceptably with `meta.defaults` and with all optional
+  fields empty.
+- Rebuild the demo site's seed to showcase the elevated set — this is the before/after
+  artifact.
+- **Accept:** demo site rebuilt with new tokens + sections; Lighthouse still ≥ 95
+  performance / 100 SEO / ≥ 95 accessibility on all pages (production build); all
+  existing suites green, the form-generator pinning script extended to every new schema,
+  and the seed idempotency check passing with the new content. Final gate is subjective
+  and held by the studio, not the agent: "would we proudly demo this to a client?" —
+  studio sign-off recorded in DECISIONS.md.
+
 ### Phase 5 — First real site pipeline
 
 - Run the design-direction step (§8.2) for the pilot client; commit the approved
