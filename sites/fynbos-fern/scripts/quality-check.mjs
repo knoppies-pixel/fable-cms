@@ -100,6 +100,24 @@ async function main() {
     await waitFor(BASE);
     console.log(`serving ${BASE}`);
 
+    // Warmup: the first request to each page pays cold-start costs a real
+    // deployment doesn't (route compilation cache, and above all the
+    // next/image optimizer's first sharp transform — measured 67 vs 93 perf
+    // on a cold 2-core CI runner). Prime every page and its optimized images
+    // so Lighthouse measures the steady state the gate is meant to guard.
+    for (const page of PAGES) {
+      const html = await (await fetch(`${BASE}${page}`)).text();
+      const imageUrls = [
+        ...new Set(
+          [...html.matchAll(/\/_next\/image\?[^"\s]+/g)].map((match) =>
+            match[0].replaceAll("&amp;", "&"),
+          ),
+        ),
+      ];
+      await Promise.all(imageUrls.map((url) => fetch(`${BASE}${url}`)));
+    }
+    console.log("warmed up all pages + optimized images");
+
     // --- Lighthouse ---------------------------------------------------------
     const lhDir = mkdtempSync(join(tmpdir(), "lh-"));
     for (const page of PAGES) {
