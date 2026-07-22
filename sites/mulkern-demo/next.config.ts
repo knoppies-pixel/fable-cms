@@ -6,7 +6,13 @@ import type { NextConfig } from "next";
 // the build/boot loudly instead. Development falls back to the local stack
 // so `pnpm dev` works out of the box.
 const rawSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-if (!rawSupabaseUrl && process.env.NODE_ENV === "production") {
+// Snapshot mode (CONTENT_SNAPSHOT_FILE) serves media from public/cms-media —
+// relative URLs, no remote host — so the Storage origin is not required.
+if (
+  !rawSupabaseUrl &&
+  !process.env.CONTENT_SNAPSHOT_FILE &&
+  process.env.NODE_ENV === "production"
+) {
   throw new Error(
     "NEXT_PUBLIC_SUPABASE_URL is required in production: next/image cannot " +
       "allowlist the media host without it, which breaks every image on the site.",

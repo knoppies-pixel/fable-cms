@@ -1,9 +1,17 @@
 import "server-only";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import type { MediaRecord } from "@fable/sections";
 
 /**
  * Content API client. All site content comes through the studio CMS content
  * API (never straight from Supabase — see CLAUDE.md hard rules).
+ *
+ * Snapshot mode (CONTENT_SNAPSHOT_FILE): content is read from a local JSON
+ * file shaped exactly like the content API response. Two consumers:
+ *  - CI builds (no live CMS in GitHub Actions);
+ *  - exported/offboarded sites, which keep building and deploying with zero
+ *    studio infrastructure — the "you can always leave" promise.
  */
 
 export interface CmsSection {
@@ -59,9 +67,22 @@ export function siteUrl(): string {
  * (revalidated on demand by the admin in Phase 4); draft-mode requests
  * bypass the cache entirely.
  */
+let snapshotCache: SiteContent | null = null;
+
 export async function fetchSiteContent(
   { drafts = false }: { drafts?: boolean } = {},
 ): Promise<SiteContent> {
+  const snapshotFile = process.env.CONTENT_SNAPSHOT_FILE;
+  if (snapshotFile) {
+    // Snapshots hold published content only; draft mode has nothing extra.
+    if (!snapshotCache) {
+      snapshotCache = JSON.parse(
+        readFileSync(resolve(snapshotFile), "utf8"),
+      ) as SiteContent;
+    }
+    return snapshotCache;
+  }
+
   const base = process.env.CMS_API_URL ?? "http://127.0.0.1:3000";
   const slug = requiredEnv("SITE_SLUG");
   const url = `${base}/api/content/${slug}${drafts ? "?drafts=1" : ""}`;

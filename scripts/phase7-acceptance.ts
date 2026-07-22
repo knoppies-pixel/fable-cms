@@ -18,7 +18,8 @@
  */
 import { createHmac } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { resolve } from "node:path";
+import { existsSync, readFileSync, rmSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -626,7 +627,245 @@ async function main() {
     await browser.close();
   }
 
-  console.log(`\nAll ${passed} checks passed (parts 1–4).`);
+  // ---------------------------------------------------------------- Part 5
+  console.log("\n## Part 5 — site exporter: the offboarding drill (export → destroy → import)");
+
+  const PILOT = "fynbos-fern";
+  const pilotEnvFile = join(ROOT, "sites", PILOT, ".env.local");
+  if (!existsSync(pilotEnvFile)) {
+    throw new Error(`sites/${PILOT}/.env.local not found — the drill needs the pilot site`);
+  }
+  const pilotEnv: Record<string, string> = {};
+  for (const line of readFileSync(pilotEnvFile, "utf8").split(/\r?\n/)) {
+    const match = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (match) pilotEnv[match[1]!] = match[2]!;
+  }
+  const pilotKey = pilotEnv.SITE_API_KEY;
+  ok(pilotKey, "pilot site API key available for the drill");
+
+  const { data: pilotSite } = await db
+    .from("sites")
+    .select("id")
+    .eq("slug", PILOT)
+    .single();
+  ok(pilotSite, "pilot site is registered");
+
+  // Enrich the pilot so every export table carries real rows: an edit (makes
+  // a revision), a submission through the real ingest API, an activity event.
+  const { data: pilotPage } = await db
+    .from("pages")
+    .select("id, sections(id, props)")
+    .eq("site_id", pilotSite.id)
+    .limit(1)
+    .single();
+  const pilotSection = pilotPage?.sections[0];
+  ok(pilotSection, "pilot has a section to edit for the drill");
+  await db
+    .from("sections")
+    .update({
+      props: {
+        ...(pilotSection.props as Record<string, unknown>),
+      } as never,
+    })
+    .eq("id", pilotSection.id); // no-op: no revision
+  await db
+    .from("sections")
+    .update({
+      props: {
+        ...(pilotSection.props as Record<string, unknown>),
+        drillMarker: "phase7",
+      } as never,
+    })
+    .eq("id", pilotSection.id);
+  const drillSubmission = await fetch(`${ADMIN}/api/forms/${PILOT}`, {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-api-key": pilotKey },
+    body: JSON.stringify({
+      name: "Drill Lead",
+      email: "drill@example.com",
+      message: "Pre-export enquiry — must survive the offboarding drill.",
+      meta: { ip: "192.0.2.1" },
+    }),
+  });
+  ok(drillSubmission.status === 200, "pilot accepts a submission before the drill");
+  await db.from("activity_log").insert({
+    site_id: pilotSite.id,
+    action: "drill.marker",
+    entity_type: "site",
+    summary: "Phase 7 offboarding drill marker",
+  });
+
+  const pilotContent = (drafts: boolean) =>
+    fetch(`${ADMIN}/api/content/${PILOT}${drafts ? "?drafts=1" : ""}`, {
+      headers: { "x-api-key": pilotKey },
+    });
+  const normalize = (payload: {
+    media: Array<{ id: string }>;
+    [key: string]: unknown;
+  }) => ({
+    ...payload,
+    media: [...payload.media].sort((a, b) => a.id.localeCompare(b.id)),
+  });
+
+  const beforePublished = normalize(await (await pilotContent(false)).json());
+  const beforeDrafts = normalize(await (await pilotContent(true)).json());
+  const beforeCounts = {
+    submissions: (
+      await db
+        .from("form_submissions")
+        .select("id", { count: "exact", head: true })
+        .eq("site_id", pilotSite.id)
+    ).count,
+    revisions: (
+      await db
+        .from("section_revisions")
+        .select("id", { count: "exact", head: true })
+        .eq("site_id", pilotSite.id)
+    ).count,
+    activity: (
+      await db
+        .from("activity_log")
+        .select("id", { count: "exact", head: true })
+        .eq("site_id", pilotSite.id)
+    ).count,
+    members: (
+      await db
+        .from("site_members")
+        .select("site_id", { count: "exact", head: true })
+        .eq("site_id", pilotSite.id)
+    ).count,
+  };
+  ok((beforeCounts.revisions ?? 0) >= 1, "drill data: pilot has revision history");
+  ok((beforeCounts.submissions ?? 0) >= 1, "drill data: pilot has a form submission");
+  ok((beforeCounts.members ?? 0) >= 1, "drill data: pilot has memberships");
+
+  // Export.
+  const drillDir = join(ROOT, "exports", `${PILOT}-drill`);
+  rmSync(drillDir, { recursive: true, force: true });
+  const exportRun = spawnSync(
+    "pnpm",
+    ["export-site", "--", "--slug", PILOT, "--out", `exports/${PILOT}-drill`],
+    { cwd: ROOT, shell: true, encoding: "utf8" },
+  );
+  if (exportRun.status !== 0) {
+    throw new Error(`export failed:\n${exportRun.stdout}\n${exportRun.stderr}`);
+  }
+  ok(existsSync(join(drillDir, "export.json")), "export.json written");
+  ok(
+    existsSync(join(drillDir, "standalone", "content-snapshot.json")),
+    "standalone bundle written with content snapshot",
+  );
+  const exported = JSON.parse(
+    readFileSync(join(drillDir, "export.json"), "utf8"),
+  ) as {
+    pages: unknown[];
+    sections: unknown[];
+    media: Array<{ path: string }>;
+    form_submissions: unknown[];
+    section_revisions: unknown[];
+  };
+  ok(
+    exported.media.every((row) =>
+      existsSync(join(drillDir, "media", ...row.path.split("/"))),
+    ),
+    "every media row's file is in the export",
+  );
+
+  // Destroy: the site row (cascade) and the storage bucket. This is the real
+  // thing — after this, only the export can bring the pilot back.
+  const pilotBucket = `media-${pilotSite.id}`;
+  await db.storage.emptyBucket(pilotBucket);
+  const { error: bucketDeleteError } = await db.storage.deleteBucket(pilotBucket);
+  ok(!bucketDeleteError, "pilot storage bucket deleted");
+  const { error: siteDeleteError } = await db
+    .from("sites")
+    .delete()
+    .eq("id", pilotSite.id);
+  ok(!siteDeleteError, "pilot site row deleted (content cascades)");
+  ok(
+    (await pilotContent(false)).status === 401,
+    "content API no longer serves the destroyed site",
+  );
+
+  // Import back, same API key so the clone + delivery settings keep working.
+  const importRun = spawnSync(
+    "pnpm",
+    [
+      "import-site",
+      "--",
+      "--dir",
+      `exports/${PILOT}-drill`,
+      "--api-key",
+      pilotKey,
+    ],
+    { cwd: ROOT, shell: true, encoding: "utf8" },
+  );
+  if (importRun.status !== 0) {
+    throw new Error(`import failed:\n${importRun.stdout}\n${importRun.stderr}`);
+  }
+  ok(true, "import-site restored the export");
+
+  const afterPublished = normalize(await (await pilotContent(false)).json());
+  const afterDrafts = normalize(await (await pilotContent(true)).json());
+  ok(
+    JSON.stringify(afterPublished) === JSON.stringify(beforePublished),
+    "published content API payload is identical after destroy → restore",
+  );
+  ok(
+    JSON.stringify(afterDrafts) === JSON.stringify(beforeDrafts),
+    "draft content API payload is identical after destroy → restore",
+  );
+
+  const afterCounts = {
+    submissions: (
+      await db
+        .from("form_submissions")
+        .select("id", { count: "exact", head: true })
+        .eq("site_id", pilotSite.id)
+    ).count,
+    revisions: (
+      await db
+        .from("section_revisions")
+        .select("id", { count: "exact", head: true })
+        .eq("site_id", pilotSite.id)
+    ).count,
+    activity: (
+      await db
+        .from("activity_log")
+        .select("id", { count: "exact", head: true })
+        .eq("site_id", pilotSite.id)
+    ).count,
+    members: (
+      await db
+        .from("site_members")
+        .select("site_id", { count: "exact", head: true })
+        .eq("site_id", pilotSite.id)
+    ).count,
+  };
+  ok(
+    JSON.stringify(afterCounts) === JSON.stringify(beforeCounts),
+    "submissions, revisions, activity and memberships all survived the drill",
+  );
+
+  const { data: restoredMedia } = await db
+    .from("media")
+    .select("path")
+    .eq("site_id", pilotSite.id)
+    .limit(1)
+    .single();
+  if (restoredMedia) {
+    const mediaResponse = await fetch(
+      `${SUPABASE_URL}/storage/v1/object/public/${pilotBucket}/${restoredMedia.path}`,
+    );
+    ok(
+      mediaResponse.status === 200,
+      "restored storage objects are publicly served again",
+    );
+  }
+
+  rmSync(drillDir, { recursive: true, force: true });
+
+  console.log(`\nAll ${passed} checks passed (parts 1–5).`);
 }
 
 main().catch((error) => {

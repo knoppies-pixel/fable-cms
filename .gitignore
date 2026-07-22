@@ -9,6 +9,8 @@ migrations/wp-fixture/
 migrations/wp-fixture-wxr/
 .next
 dist
+# site exporter output (client data — never committed)
+exports/
 *.tsbuildinfo
 .vercel
 supabase/.temp
