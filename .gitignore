@@ -11,6 +11,8 @@ migrations/wp-fixture-wxr/
 dist
 # site exporter output (client data — never committed)
 exports/
+# backup artifacts (data + credentials-adjacent — never committed)
+backups/
 *.tsbuildinfo
 .vercel
 supabase/.temp

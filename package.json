@@ -20,6 +20,8 @@
     "export-site": "pnpm --filter @fable/db exec tsx ../../scripts/export-site.ts",
     "import-site": "pnpm --filter @fable/db exec tsx ../../scripts/import-site-export.ts",
     "backup": "pnpm --filter @fable/db exec tsx ../../scripts/backup.ts",
+    "restore-backup": "pnpm --filter @fable/db exec tsx ../../scripts/restore-backup.ts",
+    "backup:drill": "pnpm --filter @fable/db exec tsx ../../scripts/backup-drill.ts",
     "sentry:smoke": "pnpm --filter @fable/db exec tsx ../../scripts/sentry-smoke.ts"
   },
   "devDependencies": {
