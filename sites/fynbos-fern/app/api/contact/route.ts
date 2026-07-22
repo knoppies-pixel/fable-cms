@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import {
   formTokenSecret,
@@ -123,7 +124,9 @@ export async function POST(request: Request) {
       );
     }
     if (!response.ok) {
+      // A failing forms API is a lost-lead risk — the loudest alarm we have.
       console.error(`[contact] forms API responded ${response.status}`);
+      Sentry.captureMessage(`contact: forms API responded ${response.status}`, "error");
       return NextResponse.json(
         { error: "Could not deliver your message — please try again." },
         { status: 502 },
@@ -133,6 +136,7 @@ export async function POST(request: Request) {
     console.error(
       `[contact] forms API unreachable: ${error instanceof Error ? error.message : error}`,
     );
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Could not deliver your message — please try again." },
       { status: 502 },

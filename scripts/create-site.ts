@@ -272,6 +272,9 @@ async function main() {
       `PREVIEW_SECRET=${previewSecret}`,
       `REVALIDATE_SECRET=${revalidateSecret}`,
       `NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}`,
+      "# Optional: Sentry error monitoring (set per environment)",
+      "SENTRY_DSN=",
+      "NEXT_PUBLIC_SENTRY_DSN=",
       "",
     ].join("\n"),
   );
@@ -302,6 +305,8 @@ ${args.name} is registered. Next steps:
          PREVIEW_SECRET            ${previewSecret}
          REVALIDATE_SECRET         ${revalidateSecret}
          NEXT_PUBLIC_SUPABASE_URL  <your Supabase project URL>
+         SENTRY_DSN                <optional — Sentry project DSN>
+         NEXT_PUBLIC_SENTRY_DSN    <optional — same DSN, for browser errors>
     4. Add the client's domain to the project; invite the studio team.
     5. Point the admin at the deployed site so preview + revalidation work:
          update sites

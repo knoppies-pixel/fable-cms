@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "site-mulkern-demo",
   "version": "0.0.0",
   "private": true,
@@ -13,9 +13,12 @@
     "seed": "tsx scripts/seed-content.ts",
     "preview": "pnpm build && pnpm start",
     "lighthouse": "npx --yes lighthouse http://localhost:3003 --chrome-flags=--headless=new --only-categories=performance,accessibility,seo --output=json --output-path=lighthouse.json --quiet",
+    "ci:snapshot": "tsx ci/make-snapshot.ts",
+    "quality": "node scripts/quality-check.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.67.0",
     "@fable/db": "workspace:*",
     "@fable/sections": "workspace:*",
     "next": "^16.2.10",

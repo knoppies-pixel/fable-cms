@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import type { Json } from "@fable/db";
 import { authenticateSiteRequest } from "@/lib/site-api-key";
@@ -164,6 +165,10 @@ export async function POST(
       .eq("id", row.id);
     if (!emailResult.sent && emailResult.reason !== "RESEND_API_KEY not configured") {
       console.error(`[forms] notification failed for ${siteSlug}: ${emailResult.reason}`);
+      Sentry.captureMessage(
+        `forms: notification email failed for ${siteSlug}: ${emailResult.reason}`,
+        "error",
+      );
     }
   }
 

@@ -3,6 +3,7 @@ packages:
   - packages/*
   - sites/*
 allowBuilds:
+  '@sentry/cli': true
   esbuild: true
   sharp: true
   supabase: true

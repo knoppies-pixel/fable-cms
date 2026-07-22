@@ -19,7 +19,8 @@
     "test:phase7": "pnpm --filter @fable/db exec tsx ../../scripts/phase7-acceptance.ts",
     "export-site": "pnpm --filter @fable/db exec tsx ../../scripts/export-site.ts",
     "import-site": "pnpm --filter @fable/db exec tsx ../../scripts/import-site-export.ts",
-    "backup": "pnpm --filter @fable/db exec tsx ../../scripts/backup.ts"
+    "backup": "pnpm --filter @fable/db exec tsx ../../scripts/backup.ts",
+    "sentry:smoke": "pnpm --filter @fable/db exec tsx ../../scripts/sentry-smoke.ts"
   },
   "devDependencies": {
     "node-html-parser": "^9.0.0",
