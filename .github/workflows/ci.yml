@@ -17,4 +17,27 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
-      - run: pnpm build
+      # Only the admin builds here: client sites (and the template in live
+      # mode) fetch content from a running CMS at build time, which CI does
+      # not have. The template IS built — in snapshot mode — by the
+      # site-quality job below. Env values are build-time placeholders; the
+      # admin reads real ones at runtime.
+      - run: pnpm --filter admin build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder
+          SUPABASE_SERVICE_ROLE_KEY: ci-placeholder
+
+  site-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Snapshot-mode build of the site template + Lighthouse thresholds +
+      # internal link check (apps/site-template/scripts/quality-check.mjs).
+      - run: pnpm --filter site-template quality
