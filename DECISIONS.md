@@ -80,6 +80,7 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
 - **Seed proves failure modes on purpose:** `/about` carries one published invalid-props hero
   and one unknown `legacy_widget` section (error cards in preview, nothing in production),
   and home carries one draft CTA. Acceptance scripts assert all three.
+
 ## Phase 3
 
 - **All admin reads/writes run as the signed-in user (RLS-scoped), never service role.**
@@ -265,10 +266,10 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
   renders it as-is for `<title>`/OG (migrated SEO titles carry their own brand suffix);
   otherwise the derived `{nav title} — {site name}` remains. Admin gains the previously
   missing page-SEO panel (`savePageSeo`): title/description/noindex, merge-preserving
-  unknown seo keys, empty fields *removed* from the jsonb so site fallbacks re-engage.
+  unknown seo keys, empty fields _removed_ from the jsonb so site fallbacks re-engage.
   Client editors can use it — `pages.seo` was already their column per the Phase 1 guard.
 - **Migration tool is three artifacts, not one command** (`pnpm migrate-wp
-  extract|plan|import` → `migrations/{site}/extract.json`, `plan.json`, `media/`). The
+extract|plan|import` → `migrations/{site}/extract.json`, `plan.json`, `media/`). The
   plan file IS the product of the first two stages: import hard-refuses until a human sets
   `approved: true` (and records `reviewNotes`), so the human-in-the-loop step is enforced
   by the tool, not by convention. extract/plan artifacts are committed as the audit trail;
@@ -342,7 +343,7 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
 - **Props snapshots are trigger-based; the activity log is app-based — deliberately
   split.** The revision trigger (`section_revisions`, AFTER UPDATE, security definer,
   BEFORE-image, cap 20/section) exists for data safety: no admin/service write path can
-  forget it. The activity log exists for human accountability, so it records *intent*
+  forget it. The activity log exists for human accountability, so it records _intent_
   (one "Reordered 6 sections on Home" event, not six row updates) from the 9 server
   actions + browser media helpers; seeds/imports stay out of it (their committed
   artifacts are the audit trail) and appear in revisions as `saved_by null` = system.
