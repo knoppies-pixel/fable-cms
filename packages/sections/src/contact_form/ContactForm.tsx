@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, type CSSProperties, type FormEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type FormEvent,
+} from "react";
 import { SectionShell } from "../lib/SectionShell";
 import { Reveal } from "../lib/animations/Reveal";
 import type { ContactFormProps } from ".";
@@ -20,8 +26,10 @@ const islandVars = {
 
 /**
  * The one interactive section (client component). Posts JSON to the site's
- * /api/contact route handler; the hidden "website" field is a honeypot —
- * the handler drops submissions that fill it.
+ * /api/contact route handler. Spam defence in depth: the hidden "website"
+ * field is a honeypot, and a server-issued interaction token (fetched on
+ * mount) proves the page was actually loaded — its age separates humans from
+ * scripts that POST instantly or never render the form at all.
  */
 export function ContactForm({
   heading,
@@ -35,6 +43,20 @@ export function ContactForm({
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle",
   );
+  const tokenRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/contact/token")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { token?: string } | null) => {
+        if (!cancelled && data?.token) tokenRef.current = data.token;
+      })
+      .catch(() => undefined); // route may be unconfigured; submit retries once
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -42,10 +64,23 @@ export function ContactForm({
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
     try {
+      if (!tokenRef.current) {
+        // Mount-time fetch failed (flaky network) — one more try before send.
+        const retry = await fetch("/api/contact/token").catch(() => null);
+        if (retry?.ok) {
+          const body = (await retry.json()) as { token?: string };
+          if (body.token) tokenRef.current = body.token;
+        }
+      }
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          formToken: tokenRef.current ?? undefined,
+          pageSlug:
+            typeof window !== "undefined" ? window.location.pathname : undefined,
+        }),
       });
       if (!response.ok) throw new Error(`status ${response.status}`);
       form.reset();

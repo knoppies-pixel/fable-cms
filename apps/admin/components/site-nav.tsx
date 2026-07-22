@@ -8,6 +8,8 @@ export function SiteNav({ siteId }: { siteId: string }) {
   const tabs = [
     { label: "Pages", href: `/sites/${siteId}/pages` },
     { label: "Media", href: `/sites/${siteId}/media` },
+    { label: "Submissions", href: `/sites/${siteId}/submissions` },
+    { label: "Activity", href: `/sites/${siteId}/activity` },
   ];
 
   return (

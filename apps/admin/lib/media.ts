@@ -1,7 +1,38 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@fable/db";
+import { logActivity } from "./activity";
 import { browserSupabase } from "./supabase/browser";
 
 /** Client-side media helpers. All calls run as the signed-in user: storage
  * object policies + media-table RLS scope them to the user's sites. */
+
+/** Signed-in user for activity entries. The insert policy re-checks the id
+ * server-side (actor_id must equal auth.uid()), so this is display-only trust. */
+async function sessionActor(
+  supabase: SupabaseClient<Database>,
+): Promise<{ id: string; email?: string | null } | null> {
+  const { data } = await supabase.auth.getSession();
+  const user = data.session?.user;
+  return user ? { id: user.id, email: user.email } : null;
+}
+
+async function logMediaActivity(
+  supabase: SupabaseClient<Database>,
+  siteId: string,
+  action: string,
+  mediaId: string | null,
+  summary: string,
+): Promise<void> {
+  const actor = await sessionActor(supabase);
+  if (!actor) return;
+  await logActivity(supabase, actor, {
+    siteId,
+    action,
+    entityType: "media",
+    entityId: mediaId,
+    summary,
+  });
+}
 
 export interface MediaRow {
   id: string;
@@ -65,6 +96,7 @@ export async function uploadMediaFile(
     await supabase.storage.from(`media-${siteId}`).remove([path]);
     throw new Error(`Could not save the media record: ${error.message}`);
   }
+  await logMediaActivity(supabase, siteId, "media.upload", data.id, `Uploaded “${path}”`);
   return data;
 }
 
@@ -80,6 +112,7 @@ export async function updateMediaAlt(
     .eq("id", mediaId)
     .eq("site_id", siteId);
   if (error) throw new Error(`Could not save alt text: ${error.message}`);
+  await logMediaActivity(supabase, siteId, "media.alt", mediaId, "Edited image alt text");
 }
 
 export async function deleteMedia(
@@ -95,6 +128,7 @@ export async function deleteMedia(
   if (error) throw new Error(`Could not delete media: ${error.message}`);
   // Best effort: the row is authoritative; a stray object hurts nothing.
   await supabase.storage.from(`media-${siteId}`).remove([media.path]);
+  await logMediaActivity(supabase, siteId, "media.delete", media.id, `Deleted “${media.path}”`);
 }
 
 export async function getMediaRow(mediaId: string): Promise<MediaRow | null> {

@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database, Json } from "@fable/db";
 import { getRegistryEntry } from "@fable/sections";
+import { logActivity } from "./activity";
 import { revalidateSite } from "./site-delivery";
 import { requireUser } from "./supabase/server";
 
@@ -24,6 +27,22 @@ export type ActionResult =
 
 const fail = (error: string): ActionResult => ({ ok: false, error });
 
+/** Nav label of a page, for activity-log summaries. Falls back gracefully. */
+async function pageTitle(
+  supabase: SupabaseClient<Database>,
+  pageId: string,
+): Promise<string> {
+  const { data } = await supabase
+    .from("pages")
+    .select("title")
+    .eq("id", pageId)
+    .maybeSingle();
+  return data?.title ?? "a page";
+}
+
+const sectionLabel = (sectionType: string): string =>
+  getRegistryEntry(sectionType)?.meta.label ?? sectionType;
+
 // --- Pages -----------------------------------------------------------------
 
 const pageSlug = z
@@ -37,7 +56,7 @@ export async function createPage(
   siteId: string,
   formData: FormData,
 ): Promise<ActionResult> {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
 
   const title = String(formData.get("title") ?? "").trim();
   if (!title) return fail("Page title is required.");
@@ -70,6 +89,13 @@ export async function createPage(
     return fail("Could not create the page.");
   }
 
+  await logActivity(supabase, user, {
+    siteId,
+    action: "page.create",
+    entityType: "page",
+    entityId: page.id,
+    summary: `Created page “${title}” (${slug})`,
+  });
   revalidatePath(`/sites/${siteId}/pages`);
   redirect(`/sites/${siteId}/pages/${page.id}`);
 }
@@ -91,7 +117,7 @@ export async function savePageSeo(
   pageId: string,
   input: { title: string; description: string; noindex: boolean },
 ): Promise<ActionResult> {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
 
   const parsed = seoInput.safeParse(input);
   if (!parsed.success) {
@@ -100,7 +126,7 @@ export async function savePageSeo(
 
   const { data: page, error: pageError } = await supabase
     .from("pages")
-    .select("seo")
+    .select("title, seo")
     .eq("id", pageId)
     .eq("site_id", siteId)
     .maybeSingle();
@@ -128,6 +154,14 @@ export async function savePageSeo(
     return fail("Could not save the SEO settings.");
   }
 
+  await logActivity(supabase, user, {
+    siteId,
+    action: "page.seo",
+    entityType: "page",
+    entityId: pageId,
+    summary: `Updated SEO for “${page.title}”`,
+    detail: { seo: seo as Json },
+  });
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
   return { ok: true, warning: await revalidateSite(supabase, siteId) };
 }
@@ -139,7 +173,7 @@ export async function addSection(
   pageId: string,
   sectionType: string,
 ): Promise<ActionResult> {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
 
   const entry = getRegistryEntry(sectionType);
   if (!entry) return fail(`Unknown section type: ${sectionType}`);
@@ -153,17 +187,28 @@ export async function addSection(
   if (siblingsError) return fail("Could not load the page's sections.");
   const sortOrder = (siblings?.[0]?.sort_order ?? -1) + 1;
 
-  const { error } = await supabase.from("sections").insert({
-    page_id: pageId,
-    section_type: sectionType,
-    props: entry.meta.defaults as never,
-    sort_order: sortOrder,
-  });
+  const { data: created, error } = await supabase
+    .from("sections")
+    .insert({
+      page_id: pageId,
+      section_type: sectionType,
+      props: entry.meta.defaults as never,
+      sort_order: sortOrder,
+    })
+    .select("id")
+    .single();
   if (error) {
     if (error.code === "42501") return fail("You don't have permission to add sections.");
     return fail("Could not add the section.");
   }
 
+  await logActivity(supabase, user, {
+    siteId,
+    action: "section.add",
+    entityType: "section",
+    entityId: created.id,
+    summary: `Added a ${entry.meta.label} section to “${await pageTitle(supabase, pageId)}”`,
+  });
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
   return { ok: true, warning: await revalidateSite(supabase, siteId) };
 }
@@ -173,7 +218,7 @@ export async function duplicateSection(
   pageId: string,
   sectionId: string,
 ): Promise<ActionResult> {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
 
   const { data: source, error: sourceError } = await supabase
     .from("sections")
@@ -190,18 +235,30 @@ export async function duplicateSection(
     .limit(1);
   const sortOrder = (siblings?.[0]?.sort_order ?? -1) + 1;
 
-  const { error } = await supabase.from("sections").insert({
-    page_id: source.page_id,
-    section_type: source.section_type,
-    props: source.props as never,
-    status: source.status,
-    sort_order: sortOrder,
-  });
+  const { data: created, error } = await supabase
+    .from("sections")
+    .insert({
+      page_id: source.page_id,
+      section_type: source.section_type,
+      props: source.props as never,
+      status: source.status,
+      sort_order: sortOrder,
+    })
+    .select("id")
+    .single();
   if (error) {
     if (error.code === "42501") return fail("You don't have permission to duplicate sections.");
     return fail("Could not duplicate the section.");
   }
 
+  await logActivity(supabase, user, {
+    siteId,
+    action: "section.duplicate",
+    entityType: "section",
+    entityId: created.id,
+    summary: `Duplicated a ${sectionLabel(source.section_type)} section on “${await pageTitle(supabase, pageId)}”`,
+    detail: { sourceSectionId: sectionId },
+  });
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
   return { ok: true, warning: await revalidateSite(supabase, siteId) };
 }
@@ -211,7 +268,15 @@ export async function deleteSection(
   pageId: string,
   sectionId: string,
 ): Promise<ActionResult> {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
+
+  // Deleting a section cascades its revision history away, so the activity
+  // log keeps a full rescue copy of what was deleted.
+  const { data: doomed } = await supabase
+    .from("sections")
+    .select("section_type, props, sort_order, status")
+    .eq("id", sectionId)
+    .maybeSingle();
 
   const { error, count } = await supabase
     .from("sections")
@@ -223,6 +288,14 @@ export async function deleteSection(
   }
   if (count === 0) return fail("Section not found (or no permission to delete it).");
 
+  await logActivity(supabase, user, {
+    siteId,
+    action: "section.delete",
+    entityType: "section",
+    entityId: sectionId,
+    summary: `Deleted a ${sectionLabel(doomed?.section_type ?? "section")} section from “${await pageTitle(supabase, pageId)}”`,
+    detail: { deleted: (doomed ?? null) as Json },
+  });
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
   return { ok: true, warning: await revalidateSite(supabase, siteId) };
 }
@@ -233,11 +306,11 @@ export async function saveSectionProps(
   sectionId: string,
   props: unknown,
 ): Promise<ActionResult> {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
 
   const { data: section, error: sectionError } = await supabase
     .from("sections")
-    .select("id, section_type")
+    .select("id, section_type, props")
     .eq("id", sectionId)
     .maybeSingle();
   if (sectionError || !section) return fail("Section not found.");
@@ -259,6 +332,12 @@ export async function saveSectionProps(
     return { ok: false, error: "Some fields are invalid.", fieldErrors };
   }
 
+  // A save that changes nothing writes nothing: no phantom revision, no
+  // activity noise, no pointless site revalidation.
+  if (JSON.stringify(parsed.data) === JSON.stringify(section.props)) {
+    return { ok: true };
+  }
+
   const { error } = await supabase
     .from("sections")
     .update({ props: parsed.data as never })
@@ -268,6 +347,13 @@ export async function saveSectionProps(
     return fail("Could not save the section.");
   }
 
+  await logActivity(supabase, user, {
+    siteId,
+    action: "section.save",
+    entityType: "section",
+    entityId: sectionId,
+    summary: `Edited the ${sectionLabel(section.section_type)} section on “${await pageTitle(supabase, pageId)}”`,
+  });
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
   revalidatePath(`/sites/${siteId}/pages/${pageId}/sections/${sectionId}`);
   return { ok: true, warning: await revalidateSite(supabase, siteId) };
@@ -280,7 +366,7 @@ export async function reorderSections(
   pageId: string,
   orderedIds: string[],
 ): Promise<ActionResult> {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
 
   const idsCheck = z.array(z.uuid()).min(1).safeParse(orderedIds);
   if (!idsCheck.success) return fail("Invalid section order.");
@@ -318,6 +404,14 @@ export async function reorderSections(
     return fail("Could not save the new order.");
   }
 
+  await logActivity(supabase, user, {
+    siteId,
+    action: "section.reorder",
+    entityType: "page",
+    entityId: pageId,
+    summary: `Reordered ${idsCheck.data.length} sections on “${await pageTitle(supabase, pageId)}”`,
+    detail: { order: idsCheck.data },
+  });
   return { ok: true, warning: await revalidateSite(supabase, siteId) };
 }
 
@@ -328,7 +422,7 @@ export async function setPageStatus(
   pageId: string,
   status: "draft" | "published",
 ): Promise<ActionResult> {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
   const statusCheck = publishStatus.safeParse(status);
   if (!statusCheck.success) return fail("Invalid status.");
 
@@ -347,6 +441,13 @@ export async function setPageStatus(
   }
   if (count === 0) return fail("Page not found.");
 
+  await logActivity(supabase, user, {
+    siteId,
+    action: statusCheck.data === "published" ? "page.publish" : "page.unpublish",
+    entityType: "page",
+    entityId: pageId,
+    summary: `${statusCheck.data === "published" ? "Published" : "Unpublished"} page “${await pageTitle(supabase, pageId)}”`,
+  });
   revalidatePath(`/sites/${siteId}/pages`);
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
   return { ok: true, warning: await revalidateSite(supabase, siteId) };
@@ -358,7 +459,7 @@ export async function setSectionStatus(
   sectionId: string,
   status: "draft" | "published",
 ): Promise<ActionResult> {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
   const statusCheck = publishStatus.safeParse(status);
   if (!statusCheck.success) return fail("Invalid status.");
 
@@ -373,7 +474,121 @@ export async function setSectionStatus(
   }
   if (count === 0) return fail("Section not found.");
 
+  await logActivity(supabase, user, {
+    siteId,
+    action: statusCheck.data === "published" ? "section.publish" : "section.unpublish",
+    entityType: "section",
+    entityId: sectionId,
+    summary: `${statusCheck.data === "published" ? "Published" : "Unpublished"} a section on “${await pageTitle(supabase, pageId)}”`,
+  });
   revalidatePath(`/sites/${siteId}/pages/${pageId}`);
   revalidatePath(`/sites/${siteId}/pages/${pageId}/sections/${sectionId}`);
   return { ok: true, warning: await revalidateSite(supabase, siteId) };
+}
+
+// --- Revisions & submissions (Phase 7) --------------------------------------
+
+/**
+ * Restore a section's props to an earlier revision. The write goes through
+ * the normal RLS-guarded update, so the snapshot trigger records the state
+ * being replaced — restoring is itself undoable.
+ */
+export async function restoreSectionRevision(
+  siteId: string,
+  pageId: string,
+  sectionId: string,
+  revisionId: number,
+): Promise<ActionResult> {
+  const { supabase, user } = await requireUser();
+
+  const [{ data: section, error: sectionError }, { data: revision, error: revisionError }] =
+    await Promise.all([
+      supabase
+        .from("sections")
+        .select("id, section_type, props")
+        .eq("id", sectionId)
+        .maybeSingle(),
+      supabase
+        .from("section_revisions")
+        .select("id, section_type, props, created_at")
+        .eq("id", revisionId)
+        .eq("section_id", sectionId)
+        .maybeSingle(),
+    ]);
+  if (sectionError || !section) return fail("Section not found.");
+  if (revisionError || !revision) return fail("Revision not found.");
+  if (revision.section_type !== section.section_type) {
+    return fail("This revision belongs to a different section type and can't be restored.");
+  }
+
+  const entry = getRegistryEntry(section.section_type);
+  if (!entry) return fail(`"${section.section_type}" is not in the registry.`);
+
+  // Parse through the current schema: newer fields pick up their defaults; a
+  // revision the schema can no longer accept is refused instead of half-applied.
+  const parsed = entry.schema.safeParse(revision.props);
+  if (!parsed.success) {
+    return fail("This revision no longer matches the section's schema and can't be restored.");
+  }
+
+  if (JSON.stringify(parsed.data) === JSON.stringify(section.props)) {
+    return { ok: true }; // already identical — nothing to restore
+  }
+
+  const { error } = await supabase
+    .from("sections")
+    .update({ props: parsed.data as never })
+    .eq("id", sectionId);
+  if (error) {
+    if (error.code === "42501") return fail("You don't have permission to edit this section.");
+    return fail("Could not restore the revision.");
+  }
+
+  const savedAt = revision.created_at
+    ? new Date(revision.created_at).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })
+    : "an earlier version";
+  await logActivity(supabase, user, {
+    siteId,
+    action: "section.restore",
+    entityType: "section",
+    entityId: sectionId,
+    summary: `Restored the ${sectionLabel(section.section_type)} section on “${await pageTitle(supabase, pageId)}” to the version saved ${savedAt}`,
+    detail: { revisionId },
+  });
+  revalidatePath(`/sites/${siteId}/pages/${pageId}`);
+  revalidatePath(`/sites/${siteId}/pages/${pageId}/sections/${sectionId}`);
+  return { ok: true, warning: await revalidateSite(supabase, siteId) };
+}
+
+export async function deleteSubmission(
+  siteId: string,
+  submissionId: string,
+): Promise<ActionResult> {
+  const { supabase, user } = await requireUser();
+
+  const { data: doomed } = await supabase
+    .from("form_submissions")
+    .select("name, email, created_at")
+    .eq("id", submissionId)
+    .eq("site_id", siteId)
+    .maybeSingle();
+
+  const { error, count } = await supabase
+    .from("form_submissions")
+    .delete({ count: "exact" })
+    .eq("id", submissionId)
+    .eq("site_id", siteId);
+  if (error) return fail("Could not delete the submission.");
+  if (count === 0) return fail("Submission not found.");
+
+  await logActivity(supabase, user, {
+    siteId,
+    action: "submission.delete",
+    entityType: "submission",
+    entityId: submissionId,
+    summary: `Deleted a form submission from ${doomed?.name ?? "unknown"} (${doomed?.email ?? "no email"})`,
+    detail: { receivedAt: doomed?.created_at ?? null },
+  });
+  revalidatePath(`/sites/${siteId}/submissions`);
+  return { ok: true };
 }

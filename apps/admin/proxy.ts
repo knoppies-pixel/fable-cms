@@ -4,9 +4,9 @@ import { supabasePublicEnv } from "./lib/env";
 
 /**
  * Session refresh + route protection for the whole admin app.
- * Public: /login and the API-key-authenticated content API.
+ * Public: /login and the API-key-authenticated content + forms APIs.
  */
-const PUBLIC_PATHS = [/^\/login$/, /^\/api\/content\//];
+const PUBLIC_PATHS = [/^\/login$/, /^\/api\/content\//, /^\/api\/forms\//];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });

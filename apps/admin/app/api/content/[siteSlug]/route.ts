@@ -1,5 +1,5 @@
-import { createHash, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
+import { authenticateSiteRequest } from "@/lib/site-api-key";
 import { serviceClient } from "@/lib/service-client";
 
 export const dynamic = "force-dynamic";
@@ -11,56 +11,24 @@ if (!SUPABASE_URL) {
   throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL (needed for media URLs)");
 }
 
-function extractApiKey(request: Request): string | null {
-  const headerKey = request.headers.get("x-api-key");
-  if (headerKey) return headerKey;
-  const auth = request.headers.get("authorization");
-  if (auth?.toLowerCase().startsWith("bearer ")) return auth.slice(7).trim();
-  return null;
-}
-
-function keyMatchesHash(apiKey: string, storedHash: string): boolean {
-  const candidate = createHash("sha256").update(apiKey).digest();
-  let stored: Buffer;
-  try {
-    stored = Buffer.from(storedHash, "hex");
-  } catch {
-    return false;
-  }
-  return (
-    candidate.length === stored.length && timingSafeEqual(candidate, stored)
-  );
-}
-
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ siteSlug: string }> },
 ) {
   const { siteSlug } = await params;
-  const apiKey = extractApiKey(request);
-  if (!apiKey) {
-    return NextResponse.json({ error: "Missing API key" }, { status: 401 });
-  }
   // Draft content is only served to holders of the site key (the site's
   // server, which uses it to render Next.js draft-mode previews).
   const includeDrafts =
     new URL(request.url).searchParams.get("drafts") === "1";
 
   const supabase = serviceClient();
-  const { data: site, error: siteError } = await supabase
-    .from("sites")
-    .select("id, slug, name, domain, tokens, settings, api_key_hash")
-    .eq("slug", siteSlug)
-    .maybeSingle();
-
-  // Unknown site and bad key both return 401 so the route doesn't leak which
-  // site slugs exist.
-  if (siteError) {
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  const auth = await authenticateSiteRequest(supabase, request, siteSlug);
+  if (!auth.site) {
+    return auth.status === 500
+      ? NextResponse.json({ error: "Internal error" }, { status: 500 })
+      : NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (!site || !keyMatchesHash(apiKey, site.api_key_hash)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const site = auth.site;
 
   let pagesQuery = supabase
     .from("pages")
@@ -100,6 +68,6 @@ export async function GET(
     height: row.height,
   }));
 
-  const { api_key_hash: _apiKeyHash, id: _id, ...publicSite } = site;
+  const { id: _id, ...publicSite } = site;
   return NextResponse.json({ site: publicSite, pages: pages ?? [], media });
 }

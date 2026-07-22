@@ -34,6 +34,100 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          created_at: string
+          detail: Json
+          entity_id: string | null
+          entity_type: string
+          id: number
+          site_id: string
+          summary: string
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          detail?: Json
+          entity_id?: string | null
+          entity_type: string
+          id?: never
+          site_id: string
+          summary: string
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          created_at?: string
+          detail?: Json
+          entity_id?: string | null
+          entity_type?: string
+          id?: never
+          site_id?: string
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_log_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      form_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          meta: Json
+          name: string
+          page_slug: string | null
+          phone: string | null
+          site_id: string
+          spam: boolean
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          meta?: Json
+          name: string
+          page_slug?: string | null
+          phone?: string | null
+          site_id: string
+          spam?: boolean
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          meta?: Json
+          name?: string
+          page_slug?: string | null
+          phone?: string | null
+          site_id?: string
+          spam?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_submissions_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media: {
         Row: {
           alt: string | null
@@ -109,6 +203,57 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "pages_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      section_revisions: {
+        Row: {
+          created_at: string
+          id: number
+          page_id: string
+          props: Json
+          saved_by: string | null
+          saved_by_email: string | null
+          section_id: string
+          section_type: string
+          site_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          page_id: string
+          props: Json
+          saved_by?: string | null
+          saved_by_email?: string | null
+          section_id: string
+          section_type: string
+          site_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          page_id?: string
+          props?: Json
+          saved_by?: string | null
+          saved_by_email?: string | null
+          section_id?: string
+          section_type?: string
+          site_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "section_revisions_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "section_revisions_site_id_fkey"
             columns: ["site_id"]
             isOneToOne: false
             referencedRelation: "sites"
@@ -218,6 +363,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bucket_site_id: { Args: { p_bucket_id: string }; Returns: string }
       has_site_role: {
         Args: { p_role: string; p_site_id: string }
         Returns: boolean
