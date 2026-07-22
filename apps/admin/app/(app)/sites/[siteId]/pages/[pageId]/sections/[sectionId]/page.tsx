@@ -25,7 +25,7 @@ export default async function SectionEditorPage({
         .maybeSingle(),
       supabase
         .from("sections")
-        .select("id, section_type, props, status, updated_at")
+        .select("id, section_type, props, status")
         .eq("id", sectionId)
         .eq("page_id", pageId)
         .maybeSingle(),
@@ -62,11 +62,7 @@ export default async function SectionEditorPage({
 
       {entry ? (
         <>
-          {/* Keyed by updated_at: a restore (or concurrent edit) refreshes the
-              server payload and must remount the client form, or its stale
-              state would win the next save. */}
           <SectionEditor
-            key={section.updated_at ?? "initial"}
             siteId={siteId}
             pageId={pageId}
             sectionId={sectionId}

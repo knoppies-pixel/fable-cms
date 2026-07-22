@@ -105,22 +105,51 @@ forward: the Vercel-preview Lighthouse re-check from 4.5/5.
 
 ---
 
-## Phase 7 — Hardening & polish (the real finish line)
+## Phase 7 — Hardening & polish (the real finish line) — ✅ COMPLETE
 
-- [ ] Props snapshots — lightweight revision history on section saves.
-- [ ] Activity log — who changed what, when.
-- [ ] Site exporter — client offboarding, proves the "you can always leave"
-      promise is real, not marketing.
-- [ ] Lighthouse CI + link checker wired into the template's GitHub Actions —
-      formalizes the manual Lighthouse runs you've been doing by hand.
-- [ ] Form spam protection review (honeypot exists — confirm it's sufficient, or
-      add a second layer).
-- [ ] Error monitoring (Sentry) wired into both admin and site-template.
-- [ ] Backup strategy for Supabase — documented and tested (a real restore drill,
-      not just "backups are probably running").
+- [x] Props snapshots — lightweight revision history on section saves.
+      *(Trigger-captured BEFORE-images, 20/section, RLS-scoped; History panel
+      + restore in the section editor — restores are themselves snapshotted,
+      and the editor remounts on server-side prop changes so stale form state
+      can't clobber a restore.)*
+- [x] Activity log — who changed what, when. *(Append-only, forgery-blocked
+      intent-level events from every admin action incl. browser media ops;
+      deleted sections leave a rescue copy in the event detail; Activity tab.)*
+- [x] Site exporter — client offboarding, proves the "you can always leave"
+      promise is real, not marketing. *(`pnpm export-site` / `import-site`:
+      all rows + files + schema + a standalone bundle. Tested against the
+      actual pilot site: destroy → restore = byte-identical content API; the
+      standalone copy installed + built + served OUTSIDE the monorepo with no
+      CMS/Supabase at all.)*
+- [x] Lighthouse CI + link checker wired into the template's GitHub Actions.
+      *(`pnpm quality` on a registry-defaults fixture in snapshot mode —
+      a11y ≥95, SEO 100, perf error-line 90 (documented local/CI artifact vs
+      the ≥95 production bar), zero broken internal links. In root CI (fixed
+      from permanently red) and the template's own workflow for client repos.
+      The link checker caught a real fixture gap on its first run.)*
+- [x] Form spam protection review — honeypot alone was NOT sufficient: the
+      bigger hole was submissions vanishing into console.log. *(Now: honeypot
+      + signed interaction token + link heuristic + DB-backed rate limits;
+      persisted to `form_submissions`, admin Submissions inbox, optional
+      Resend notify; flagged-not-dropped so a false positive never loses a
+      lead.)*
+- [x] Error monitoring (Sentry) wired into both admin and site-template.
+      *(DSN-optional; captures on the lead-loss paths; `pnpm sentry:smoke`
+      proved a real envelope reaches an ingest server, no account needed.)*
+- [x] Backup strategy for Supabase — documented and tested with a real
+      restore drill. *(BACKUPS.md + `pnpm backup` / `restore-backup` /
+      `backup:drill`; live drill 2026-07-22: database destroyed and restored,
+      3 sites byte-identical, logins restored, 10/10 — and it surfaced +
+      fixed a real kong-after-reset quirk.)*
 
 **Exit criteria:** you'd trust this system with a real business's only website and
 your family's goodwill. This is the actual gate before Brand Management Solutions.
+**Met** — every mechanism above was exercised against real failure (destroyed
+databases, deleted sites, bot submissions, thrown server errors), not just
+implemented. Gate: suites 1–6 re-run green + `pnpm test:phase7` (79 checks) +
+sentry smoke (5) + backup drill (10); details in DECISIONS.md §Phase 7. Still
+carried forward (unchanged, needs a real deployment): the Vercel-preview
+Lighthouse re-check from 4.5/5/6.
 
 ---
 

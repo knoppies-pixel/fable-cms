@@ -91,6 +91,29 @@ Non-negotiable on every page before a change is "done":
 - One `h1` per page; heading levels don't skip; all images have meaningful alt text.
 - Lighthouse ≥ 95 performance, 100 SEO, ≥ 95 accessibility on the built output
   (`pnpm build && pnpm lighthouse`). If a change drops a score, fix it or revert.
+- The automated version of this bar is `pnpm quality` (also `.github/workflows/quality.yml`
+  when this repo lives standalone): snapshot-mode build against the generated CI fixture,
+  Lighthouse on `/` and `/sections` (perf error line 90 locally/CI — the documented
+  HTTP/1.1 loopback artifact vs the ≥ 95 production bar), and an internal link check.
+  A red gate blocks the change; don't lower thresholds to make it pass.
+
+## Forms, monitoring, offboarding (Phase 7 plumbing)
+
+- **Contact form**: `/api/contact` verifies a honeypot plus a signed interaction token
+  (`/api/contact/token`, HMAC with `PREVIEW_SECRET`) and forwards submissions to the CMS
+  forms API (`x-api-key`), which persists them (admin → Submissions) and, when
+  `sites.settings.forms.notifyEmail` + the admin's `RESEND_API_KEY` are set, emails the
+  client. Heuristic spam is stored flagged — never silently dropped. Don't weaken these
+  layers; if a client reports missing enquiries, check the admin inbox first (spam flag),
+  then Sentry.
+- **Error monitoring**: Sentry is wired (instrumentation*.ts, `global-error.tsx`) and
+  activates only when `SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN` are set. Verify a live DSN
+  with `SENTRY_SMOKE=1` + `/api/debug-sentry` (deliberate 500).
+- **Snapshot mode**: with `CONTENT_SNAPSHOT_FILE` set, the site renders from a local
+  content-API-shaped JSON (media under `public/cms-media/`) and needs no CMS at all.
+  Used by CI and by `pnpm export-site` (monorepo root) — the client-offboarding exporter
+  that produces a fully standalone copy of this site. Keep new code snapshot-safe: all
+  content access goes through `lib/cms.ts`.
 
 ## Commands
 
@@ -102,6 +125,9 @@ Non-negotiable on every page before a change is "done":
 - `pnpm preview` — production build + local serve
 - `pnpm lighthouse` — Lighthouse against the running preview (writes `lighthouse.json`;
   quality bar above reads its scores)
+- `pnpm quality` — the full automated gate: CI fixture → snapshot build → Lighthouse
+  thresholds → internal link check (no CMS required)
+- `pnpm ci:snapshot` — (re)generate the CI content fixture on its own
 
 ## Hard rules
 

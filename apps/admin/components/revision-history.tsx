@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { restoreSectionRevision } from "@/lib/actions";
 
 export interface RevisionSummary {
@@ -26,7 +25,6 @@ export function RevisionHistory({
   sectionId: string;
   revisions: RevisionSummary[];
 }) {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -79,7 +77,12 @@ export function RevisionHistory({
                         if (!result.ok) setError(result.error);
                         else {
                           if (result.warning) setWarning(result.warning);
-                          router.refresh();
+                          // Full reload on purpose: the section form seeds its
+                          // client state from the server payload once, and a
+                          // soft refresh would leave the pre-restore values in
+                          // the form to win the next save. Restores are rare;
+                          // correctness beats smoothness here.
+                          window.location.reload();
                         }
                       });
                     }

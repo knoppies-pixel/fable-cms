@@ -336,3 +336,90 @@ Running log of implementation choices and their tradeoffs (see CMS_SYSTEM_SPEC.m
   loop. Admin SEO panel verified via a separate Playwright smoke (edit → content API →
   restore). Carried forward: the standing Vercel-preview Lighthouse re-check (4.5/5) —
   unchanged by this phase, the mulkern preview is local like the pilot's.
+
+## Phase 7
+
+- **Props snapshots are trigger-based; the activity log is app-based — deliberately
+  split.** The revision trigger (`section_revisions`, AFTER UPDATE, security definer,
+  BEFORE-image, cap 20/section) exists for data safety: no admin/service write path can
+  forget it. The activity log exists for human accountability, so it records *intent*
+  (one "Reordered 6 sections on Home" event, not six row updates) from the 9 server
+  actions + browser media helpers; seeds/imports stay out of it (their committed
+  artifacts are the audit trail) and appear in revisions as `saved_by null` = system.
+  Forgery is blocked in policy (`actor_id = auth.uid()`), the log is append-only for
+  `authenticated`, and `actor_email` is display-only denormalization (survives user
+  deletion; `actor_id` is the authoritative claim).
+- **Deleting a section still discards its revision history (cascade) — accepted.** The
+  activity event for `section.delete` carries a full rescue copy of the deleted row
+  (type/props/sort/status) in `detail`, so an accidental delete is manually
+  reconstructable without a soft-delete system. Editor-facing undo-delete is a Phase 8
+  candidate if a real client trips on it.
+- **Restore forces a full page reload — deliberately blunt.** Found while building
+  restore: the auto-form seeds client state from `initialProps` once, so a restore
+  followed by Save would silently resurrect the pre-restore props. First fix
+  (`key={section.updated_at}` remount) was wrong: every save also revalidates the editor
+  path, so the remount raced the "Saved ✓" indicator and the phase 3 suite caught it
+  flaking. Final shape: normal saves stay untouched; the rare restore does
+  `window.location.reload()` — correctness over smoothness. (Two-tab concurrent editing
+  still last-write-wins, pre-existing and out of scope.)
+- **Form submissions persist first; email is best-effort on top.** The site's
+  `/api/contact` (honeypot → signed interaction token → link heuristic) forwards to the
+  admin's `/api/forms/[siteSlug]` (site-key auth, same `timingSafeEqual` helper as the
+  content route), which inserts via service role, then tries Resend (bare fetch, no SDK;
+  provider swap = one function — closes the §11 open decision as "Resend by default,
+  env-gated"). Rate limits are DB-count based (30/h site, 5/h IP) — no new infra, honest
+  under serverless. Heuristic spam is stored flagged, never dropped: a false positive
+  costs a notification, never the lead. Only unambiguous bots (honeypot fills, tokenless
+  direct POSTs) are turned away; the token is HMAC-signed with `PREVIEW_SECRET` because
+  both ends of the check live in the site app — no new secret to rotate.
+- **The offboarding promise is now a tested artifact, not a claim.** `pnpm export-site`
+  produces data (`export.json` — all rows incl. submissions/revisions/activity/members),
+  every storage object, the schema migrations, and a `standalone/` bundle: vendored
+  `@fable/*` packages (`file:` deps; `vendor` excluded from typecheck since imports
+  resolve through node_modules; `pnpm-workspace.yaml` ships `allowBuilds` because pnpm 11
+  ignores `package.json#pnpm`), media in `public/cms-media/`, and `CONTENT_SNAPSHOT_FILE`
+  mode in `lib/cms.ts` so the site renders with zero studio infrastructure.
+  Proven twice: (a) the phase 7 suite's destroy→import drill on the pilot — content API
+  byte-identical after the site row + bucket were really deleted; (b) the standalone
+  bundle installed and built OUTSIDE the monorepo this session, all pages + optimizer
+  images 200 with no CMS/Supabase running. `import-site-export.ts` preserves ids and
+  timestamps (history tables get fresh identity ids, order preserved) and refuses to
+  import over an existing slug/id.
+- **Quality gate runs on a generated fixture, not live content.** `pnpm quality` builds
+  in snapshot mode from `ci/make-snapshot.ts` (registry `meta.defaults` + dependency-free
+  generated PNGs — the defaults contract finally has an automated consumer) and enforces
+  Lighthouse a11y ≥ 95 / SEO = 100 / perf ≥ 90 plus zero broken internal links. The perf
+  error line is 90, not 95: Phase 4.5 measured the local/CI HTTP/1.1 loopback + Lantern
+  artifact at ~5 points (desktop control 100), so 95 would be permanently red in CI for a
+  non-defect while 90 still catches real regressions; the ≥ 95 production bar stands,
+  verified against real deployments. First fixture run caught a real gap (defaults link
+  to `/contact` → fixture had no such page → broken-link failure), which is the gate
+  working. Root CI went from permanently red (site builds need a live CMS) to
+  typecheck + admin build + this gate; the template ships its own `quality.yml` for
+  standalone client repos (inert nested in the monorepo).
+- **Sentry is DSN-optional and its pipeline is proven, not assumed.** Identical wiring in
+  both apps (instrumentation + client init + global-error), `tracesSampleRate: 0`
+  (error monitoring is the goal), no source-map upload (needs an org token — later).
+  Targeted captures sit exactly on the lead-loss paths (forms API unreachable/erroring,
+  notification email failure). `pnpm sentry:smoke` boots a fake ingest server and asserts
+  a real envelope with the real error arrives via `/api/debug-sentry` (inert without
+  `SENTRY_SMOKE=1`) — 5/5 green this session with zero external accounts.
+- **Backups: schema lives in git, data in `pnpm backup`, and the drill is the deliverable.**
+  `backup.ts` dumps `auth` + `public` data (COPY) and downloads every `media-*` object
+  with a manifest; `restore-backup.ts` resets to migrations, loads data under
+  `session_replication_role = replica` (data-only dumps have no FK order), recreates
+  buckets, re-uploads, and verifies counts. `pnpm backup:drill -- --yes` destroyed and
+  restored the real local stack this session: 10/10, three sites byte-identical, logins
+  restored from dumped hashes. The first live run surfaced a real quirk — kong keeps
+  routing storage to the dead container after `db reset` and 502s forever — now
+  self-healed in the restore script (auto kong restart) and documented in BACKUPS.md
+  with the drill log.
+- **Template→clone propagation is still manual file copy — cost acknowledged.** Phase 7
+  touched platform files (cms.ts, next.config.ts, contact routes, Sentry set, quality
+  files, CLAUDE.md) and every change had to be synced to both clones by hand; the
+  standalone-bundle build failed once precisely because a clone lagged the template. Fine
+  at 2 clones, won't be at 10 — a `sync-template` script (or moving platform files into a
+  package) is the Phase 8 shape if clone count grows.
+- **Cleanup:** a stray committed junk file (`packages/db/console.log('child`) from a
+  shell-quoting accident was removed; the template now ships a `.gitignore` (clones
+  previously had none, risking committed `.env.local` in standalone client repos).
